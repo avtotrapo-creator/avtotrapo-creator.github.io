@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>პიწკინა</title>
+
+<!-- PWA: iPhone / Android Home Screen -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="პიწკინა">
+<meta name="theme-color" content="#c0392b">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23c0392b'/%3E%3Ctext y='.9em' font-size='72' x='12' font-family='Apple Color Emoji,Segoe UI Emoji,sans-serif'%3E%F0%9F%90%B7%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%E1%83%9E%E1%83%98%E1%83%AC%E1%83%99%E1%83%98%E1%83%9C%E1%83%90%22%2C%22short_name%22%3A%22%E1%83%9E%E1%83%98%E1%83%AC%E1%83%99%E1%83%98%E1%83%9C%E1%83%90%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%23c0392b%22%7D">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#f2f2f7; color:#1a1a1a; }
+
+/* LOGIN */
+#login { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; background:#fff; }
+.logo  { font-size:56px; margin-bottom:6px; }
+.brand { font-size:26px; font-weight:900; color:#c0392b; margin-bottom:28px; }
+.ugrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; max-width:290px; }
+.ubtn  { padding:18px 10px; border:2px solid #eee; border-radius:16px; background:#fff; cursor:pointer; text-align:center; font-size:14px; font-weight:700; }
+.ubtn:active { transform:scale(.96); }
+.ubtn.admin { border-color:#c0392b; background:#fff8f8; }
+.ubtn .av { font-size:32px; display:block; margin-bottom:4px; }
+
+/* APP */
+#app { display:none; min-height:100vh; flex-direction:column; }
+.hdr { background:#c0392b; color:#fff; padding:13px 16px; padding-top:max(13px, env(safe-area-inset-top)); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+.hbrand { font-size:18px; font-weight:900; }
+.huser  { font-size:12px; opacity:.8; margin-top:1px; }
+.outbtn { background:rgba(255,255,255,.2); border:none; color:#fff; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; }
+
+.tabs { display:flex; background:#fff; border-bottom:2px solid #f0f0f0; }
+.tab  { flex:1; min-width:0; padding:11px 4px; text-align:center; font-size:11px; font-weight:700; color:#bbb; border-bottom:3px solid transparent; cursor:pointer; }
+.tab.on { color:#c0392b; border-bottom-color:#c0392b; }
+.tabic { font-size:19px; display:block; margin-bottom:1px; }
+.tbadge { display:inline-block; background:#c0392b; color:#fff; border-radius:10px; font-size:10px; padding:0 5px; line-height:16px; margin-left:2px; vertical-align:middle; }
+
+.wrap { flex:1; padding:14px; max-width:660px; margin:0 auto; width:100%; }
+
+.stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
+.stat  { background:#fff; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,.05); }
+.snum  { font-size:28px; font-weight:900; color:#c0392b; }
+.slbl  { font-size:10px; color:#bbb; margin-top:2px; }
+
+.addbtn { width:100%; padding:15px; background:#c0392b; color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:900; cursor:pointer; margin-bottom:14px; display:none; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(192,57,43,.3); }
+.addbtn:active { transform:scale(.98); }
+
+/* FORM */
+.formbox { background:#fff; border-radius:16px; padding:0; box-shadow:0 2px 14px rgba(0,0,0,.06); margin-bottom:14px; display:none; overflow:hidden; }
+.formbox.on { display:block; }
+
+.fgroup { padding:14px 16px; border-bottom:1px solid #f0f0f0; }
+.fgroup:last-child { border-bottom:none; }
+.fglabel { font-size:10px; font-weight:800; color:#bbb; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
+
+.g1row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.finp { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; background:#fafafa; transition:border .15s; }
+.finp:focus { border-color:#c0392b; background:#fff; }
+
+.pills { display:flex; gap:8px; flex-wrap:wrap; }
+.pill  { padding:8px 16px; border:2px solid #e5e5e5; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; background:#fff; color:#555; transition:all .15s; white-space:nowrap; }
+.pill:active { transform:scale(.95); }
+.pill.on { border-color:#c0392b; background:#c0392b; color:#fff; }
+.date-custom { margin-top:8px; display:none; }
+.date-custom input { width:100%; padding:10px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:14px; outline:none; }
+.date-custom input:focus { border-color:#c0392b; }
+.pills-sep { width:100%; height:0; margin:4px 0; }
+
+.finp-big { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; background:#fafafa; transition:border .15s; }
+.finp-big:focus { border-color:#c0392b; background:#fff; }
+
+.factions { display:flex; gap:8px; padding:14px 16px; border-top:1px solid #f0f0f0; }
+.savebtn  { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:900; cursor:pointer; }
+.cancbtn  { padding:13px 18px; background:#f0f0f0; color:#888; border:none; border-radius:12px; font-size:14px; cursor:pointer; }
+
+.daybar { display:flex; gap:8px; margin-bottom:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+.daybar::-webkit-scrollbar { display:none; }
+.db    { flex-shrink:0; padding:7px 16px; border:2px solid #e5e5e5; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; background:#fff; color:#666; white-space:nowrap; }
+.db.on { border-color:#c0392b; background:#c0392b; color:#fff; }
+
+.sloth { display:flex; align-items:center; gap:8px; margin:16px 0 8px; font-size:13px; font-weight:800; color:#777; }
+.sloth::after { content:''; flex:1; height:1px; background:#e8e8e8; }
+
+.card  { background:#fff; border-radius:14px; margin-bottom:10px; box-shadow:0 1px 8px rgba(0,0,0,.05); border-left:5px solid #ddd; overflow:hidden; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+.card.morning   { border-left-color:#f39c12; }
+.card.afternoon { border-left-color:#27ae60; }
+.card.evening   { border-left-color:#8e44ad; }
+.card.done      { opacity:.42; }
+
+.ctop  { display:flex; align-items:center; justify-content:space-between; padding:10px 14px 6px; }
+.phonebtn { display:inline-flex; align-items:center; gap:6px; font-size:15px; font-weight:900; color:#15803d; text-decoration:none; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:24px; padding:6px 13px; }
+.cname  { font-size:14px; font-weight:700; color:#333; text-align:right; }
+.cflags { display:flex; flex-direction:column; align-items:flex-end; gap:3px; margin-top:2px; }
+.flag   { font-size:10px; font-weight:700; padding:3px 8px; border-radius:12px; }
+.fam   { background:#fef3cd; color:#b7791f; }
+.fpm   { background:#d1fae5; color:#166534; }
+.fev   { background:#ede9fe; color:#5b21b6; }
+.fdone { background:#dcfce7; color:#15803d; }
+.fwait { background:#fef9c3; color:#a16207; }
+
+.cmid  { padding:4px 14px 8px; display:flex; flex-direction:column; gap:2px; }
+.crow  { font-size:13px; color:#555; }
+.crow.weight { color:#c0392b; font-weight:700; font-size:14px; }
+
+.cbot  { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-top:1px solid #f5f5f5; }
+.ctag  { font-size:12px; font-weight:800; padding:4px 11px; border-radius:20px; background:#f0f0f0; color:#666; }
+.ct-a  { background:#dbeafe; color:#1d4ed8; }
+.ct-l  { background:#fee2e2; color:#b91c1c; }
+.ct-b  { background:#f1f5f9; color:#334155; }
+.acts  { display:flex; gap:6px; }
+.act   { padding:6px 11px; border:none; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; }
+.acopy   { background:#f3f4f6; color:#555; }
+.acopy.ok{ background:#dcfce7; color:#15803d; }
+.aassign { background:#dbeafe; color:#1d4ed8; }
+.adone   { background:#dcfce7; color:#15803d; }
+
+.empty { text-align:center; padding:55px 20px; color:#ccc; }
+.emptyic { font-size:52px; margin-bottom:8px; }
+
+.ctxmenu { display:none; position:fixed; z-index:300; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.18); overflow:hidden; min-width:180px; }
+.ctxmenu.on { display:block; }
+.ctxi { padding:14px 18px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid #f5f5f5; }
+.ctxi:last-child { border-bottom:none; }
+.ctxi:active { background:#f5f5f5; }
+.ctxi.red { color:#dc2626; }
+
+.mbg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; align-items:flex-end; justify-content:center; }
+.mbg.on { display:flex; }
+.modal { background:#fff; border-radius:22px 22px 0 0; padding:24px; width:100%; max-width:440px; }
+.modal h3 { font-size:16px; font-weight:900; margin-bottom:16px; }
+.mcg  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.mc   { padding:18px 8px; border:2px solid #eee; border-radius:14px; text-align:center; cursor:pointer; font-size:13px; font-weight:700; }
+.mc:hover { border-color:#c0392b; }
+.mcic { font-size:28px; display:block; margin-bottom:3px; }
+.mcnone { width:100%; margin-top:10px; padding:12px; background:#f5f5f5; border:none; border-radius:12px; font-size:14px; color:#999; cursor:pointer; font-weight:600; }
+.mcx    { width:100%; margin-top:8px; padding:12px; background:#fee2e2; border:none; border-radius:12px; font-size:14px; color:#dc2626; cursor:pointer; font-weight:700; }
+
+.edit-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:250; align-items:flex-end; justify-content:center; }
+.edit-modal.on { display:flex; }
+.edit-box { background:#fff; border-radius:22px 22px 0 0; padding:20px; width:100%; max-width:480px; }
+.edit-box h3 { font-size:15px; font-weight:900; margin-bottom:14px; color:#c0392b; }
+.edit-row { margin-bottom:10px; }
+.edit-row label { font-size:11px; font-weight:700; color:#bbb; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
+.edit-row input { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; }
+.edit-row input:focus { border-color:#c0392b; }
+.edit-acts { display:flex; gap:8px; margin-top:14px; }
+.edit-save { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:900; cursor:pointer; }
+.edit-cancel { padding:13px 18px; background:#f0f0f0; color:#888; border:none; border-radius:12px; font-size:14px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="logo">🐷</div>
+  <div class="brand">პიწკინა</div>
+  <div class="ugrid" id="ugrid">
+    <!-- filled by JS based on URL -->
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div id="pw-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:22px;padding:28px 24px;width:90%;max-width:320px;text-align:center;">
+    <div style="font-size:36px;margin-bottom:6px">🔐</div>
+    <div style="font-size:17px;font-weight:900;margin-bottom:4px" id="pw-name"></div>
+    <div style="font-size:12px;color:#bbb;margin-bottom:18px">შეიყვანე პაროლი</div>
+    <input id="pw-input" type="password" inputmode="numeric" maxlength="12"
+      style="width:100%;padding:14px;border:2px solid #eee;border-radius:14px;font-size:24px;letter-spacing:6px;text-align:center;outline:none;font-family:inherit"
+      placeholder="••••••"
+      onkeydown="if(event.key==='Enter')checkPw()"
+      oninput="document.getElementById('pw-err').style.display='none'">
+    <div id="pw-err" style="display:none;color:#c0392b;font-size:12px;font-weight:700;margin-top:8px">❌ პაროლი არასწორია</div>
+    <button onclick="checkPw()" style="width:100%;margin-top:14px;padding:14px;background:#c0392b;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:900;cursor:pointer">შესვლა</button>
+    <button onclick="closePwModal()" style="width:100%;margin-top:8px;padding:12px;background:#f5f5f5;color:#888;border:none;border-radius:14px;font-size:14px;cursor:pointer">გაუქმება</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="hdr">
+    <div><div class="hbrand">🐷 პიწკინა</div><div class="huser" id="huser"></div></div>
+    <div style="display:flex;gap:6px;align-items:center">
+<button class="outbtn" id="ref-btn" onclick="doRefresh()" title="განახლება" style="background:rgba(255,255,255,.25);padding:7px 11px">🔄</button>
+      <button class="outbtn" onclick="logout()">გასვლა</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" onclick="setTab('orders')" id="t-orders" style="display:none">შეკვეთები</div>
+    <div class="tab" onclick="setTab('today')" id="t-today">დღეს</div>
+    <div class="tab" onclick="setTab('tom')" id="t-tom">ხვალ</div>
+    <div class="tab" onclick="setTab('dag')" id="t-dag">ზეგ</div>
+    <div class="tab" id="t-cal" style="font-size:18px;position:relative;overflow:hidden">
+      <span id="t-cal-txt" style="pointer-events:none;position:relative;z-index:1">📆</span>
+      <input type="date" id="cal-pick" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.001;cursor:pointer;z-index:2;-webkit-appearance:none;background:transparent;border:none;padding:0;margin:0;font-size:16px" onchange="pickCalDate(this.value)">
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats" id="stats" style="display:none">
+      <div class="stat"><div class="snum" id="s-all">0</div><div class="slbl">სულ</div></div>
+      <div class="stat"><div class="snum" id="s-wait" style="color:#f39c12">0</div><div class="slbl">მოლოდინი</div></div>
+      <div class="stat"><div class="snum" id="s-done" style="color:#27ae60">0</div><div class="slbl">მიტანილი</div></div>
+    </div>
+    <div class="stats" id="dstats" style="display:none">
+      <div class="stat"><div class="snum" id="ds-am" style="color:#f39c12">0</div><div class="slbl">🏃 დილა</div></div>
+      <div class="stat"><div class="snum" id="ds-pm" style="color:#27ae60">0</div><div class="slbl">🌞 შუადღე</div></div>
+      <div class="stat"><div class="snum" id="ds-ev" style="color:#8e44ad">0</div><div class="slbl">🌛 საღამო</div></div>
+    </div>
+
+    <button class="addbtn" id="addbtn" onclick="openForm()">➕ ახალი შეკვეთა</button>
+
+    <div class="formbox" id="form">
+      <div class="fgroup">
+        <textarea class="finp-big" id="f-raw" rows="7" style="resize:none;line-height:1.6;font-size:16px"></textarea>
+      </div>
+      <div class="factions">
+        <button class="cancbtn" onclick="closeForm()">გაუქმება</button>
+        <button class="savebtn" onclick="saveOrder()">💾 შენახვა</button>
+      </div>
+    </div>
+
+    <div class="daybar" id="daybar"></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<!-- ASSIGN MODAL -->
+<div class="mbg" id="modal">
+  <div class="modal">
+    <h3>👤 კურიერის მინიჭება</h3>
+    <div class="mcg">
+      <div class="mc" onclick="assign('ანდრო')"><span class="mcic">🚙</span>ანდრო</div>
+      <div class="mc" onclick="assign('ლევანი')"><span class="mcic">🚗</span>ლევანი</div>
+      <div class="mc" onclick="assign('ბექა')"><span class="mcic">🚐</span>ბექა</div>
+    </div>
+    <button class="mcnone" onclick="assign('')">— მოგვიანებით —</button>
+    <button class="mcx" onclick="closeModal()">გაუქმება</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-modal" id="edit-modal">
+  <div class="edit-box">
+    <h3>✏️ შეკვეთის ჩასწორება</h3>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button onclick="setEditDate('დღეს')" id="edt-today" style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">🌤 დღეს</button>
+      <button onclick="setEditDate('ხვალ')" id="edt-tom"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">📅 ხვალ</button>
+      <button onclick="setEditDate('ზეგ')"  id="edt-dag"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">📆 ზეგ</button>
+    </div>
+    <div class="edit-row"><textarea id="e-raw" rows="7" style="width:100%;padding:11px 13px;border:1.5px solid #e8e8e8;border-radius:12px;font-size:15px;font-family:inherit;outline:none;resize:none;line-height:1.6"></textarea></div>
+    <div class="edit-acts">
+      <button class="edit-cancel" onclick="closeEdit()">გაუქმება</button>
+      <button class="edit-save" onclick="saveEdit()">💾 შენახვა</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctxmenu" id="ctx">
+  <div class="ctxi" onclick="ctxCopy()">📋 კოპირება</div>
+  <div class="ctxi" onclick="ctxAssign()">👤 კურიერი</div>
+  <div class="ctxi" onclick="ctxDone()">✅ მიტანილი / მოლოდინი</div>
+  <div class="ctxi" onclick="ctxEdit()">✏️ ჩასწორება</div>
+  <div class="ctxi red" onclick="ctxDelete()">🗑️ წაშლა</div>
+</div>
+<div id="ctx-bg" style="display:none;position:fixed;inset:0;z-index:299" onclick="closeCtx()"></div>
+
+<script>
+const ADMINS = ['ავთო','ხათო'];
+let me='', role='', tab='all', assignId=null, calDate='';
+let ctxId=null;
+
+function ymd(d){ const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(); return y+'-'+String(m).padStart(2,'0')+'-'+String(day).padStart(2,'0'); }
+function today(){ return ymd(new Date()); }
+function tom()  { const d=new Date(); d.setDate(d.getDate()+1); return ymd(d); }
+function dag()  { const d=new Date(); d.setDate(d.getDate()+2); return ymd(d); }
+function dayName(d){
+  if(d===today()) return 'დღეს';
+  if(d===tom())   return 'ხვალ';
+  if(d===dag())   return 'ზეგ';
+  const [,m,day]=d.split('-');
+  return +day+' '+['იანვ','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'][+m-1];
+}
+function detectDate(raw){
+  if(/დღეს/i.test(raw)) return today();
+  if(/ზეგ/i.test(raw))  return dag();
+  if(/ხვალ/i.test(raw)) return tom();
+  const dm = raw.match(/(?:^|\n)(\d{1,2})\s*[-–]?\s*შ(?!ე)/);
+  if(dm){
+    const day=parseInt(dm[1]);
+    if(day>=1 && day<=31){
+      const now=new Date();
+      let d=new Date(now.getFullYear(), now.getMonth(), day);
+      const todayMid=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      if(d < todayMid) d=new Date(now.getFullYear(), now.getMonth()+1, day);
+      return ymd(d);
+    }
+  }
+  return today();
+}
+function autoFormat(raw){
+  const lines=raw.split('\n').map(line=>{
+    const l=line.trimStart();
+    if(/წიწილა/i.test(l) && !/🐥/.test(l)) return '🐥'+l;
+    if(/ზუთხ/i.test(l)   && !/🐬/.test(l)) return '🐬'+l;
+    if(/ორაგულ/i.test(l)  && !/🐟/.test(l)) return '🐟'+l;
+    if(/ხაჭაპ/i.test(l)   && !/🫓/.test(l)) return '🫓'+l;
+    return line;
+  });
+  let r=lines.join('\n');
+  if(/დაჭრ/i.test(r) && !/⭕/.test(r)){
+    const ls=r.split('\n'); ls[0]=ls[0].trimEnd()+' ⭕️'; r=ls.join('\n');
+  }
+  return r;
+}
+function extractPhone(raw){
+  const m=raw.match(/[\d]{9,}/); return m?m[0]:'';
+}
+function slotBucket(raw){
+  if(/\b11\s*[–\-]\s*(1|13)\b/.test(raw)) return 0;
+  if(/\b(1|13)\s*[–\-]\s*(3|15)\b/.test(raw)) return 1;
+  if(/\b(4|16)\s*[–\-]\s*(6|18)\b/.test(raw)) return 2;
+  const m = raw.match(/\b(\d{1,2})\s*ს/);
+  if(m){
+    let h=parseInt(m[1]);
+    if(h>=1 && h<=6) h+=12;
+    if(h<=12) return 0;
+    if(h<=15) return 1;
+    return 2;
+  }
+  return 3;
+}
+
+const SUPA_URL = 'https://nwouayjpvqqdmjblqqha.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53b3VheWpwdnFxZG1qYmxxcWhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDYzOTksImV4cCI6MjA5Njg4MjM5OX0.Q03fs4ztbsoIzhFU7iisjXlMrAjKe3UupJMb4Ib41NY';
+const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+function load(){
+  try{
+    const main=JSON.parse(localStorage.getItem('pw4')||'[]');
+    if(main.length) return main;
+    const bk=JSON.parse(localStorage.getItem('pw4_bk')||'[]');
+    if(bk.length){ localStorage.setItem('pw4',JSON.stringify(bk)); return bk; }
+    return [];
+  }catch(e){ return []; }
+}
+function store(a){
+  const s=JSON.stringify(a);
+  localStorage.setItem('pw4',s);
+  localStorage.setItem('pw4_bk',s);
+}
+
+async function cloudPush(order){
+  await sb.from('orders').upsert({
+    id: order.id, raw: order.raw, phone: order.phone,
+    date: order.date, courier: order.courier||'',
+    done: order.done||false, by_user: order.by||''
+  });
+}
+async function cloudDelete(id){
+  await sb.from('orders').delete().eq('id', id);
+}
+async function cloudUpdate(order){
+  await sb.from('orders').update({
+    raw: order.raw, phone: order.phone, date: order.date,
+    courier: order.courier||'', done: order.done||false, by_user: order.by||''
+  }).eq('id', order.id);
+}
+async function cloudLoad(){
+  const {data,error}=await sb.from('orders').select('*').order('id');
+  if(error||!data) return null;
+  return data.map(r=>({id:r.id,raw:r.raw,phone:r.phone,date:r.date,courier:r.courier,done:r.done,by:r.by_user}));
+}
+function fixNumericDates(arr){
+  // Re-detect dates for orders with explicit numeric day (not relative დღეს/ხვალ/ზეგ)
+  // Fixes off-by-one caused by old UTC-based ymd() bug
+  arr.forEach(o=>{
+    if(!/დღეს|ხვალ|ზეგ/i.test(o.raw)){
+      const correct=detectDate(o.raw);
+      if(correct && correct!==o.date){ o.date=correct; cloudUpdate(o); }
+    }
+  });
+  store(arr);
+}
+function startRealtime(){
+  sb.channel('orders-all')
+    .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{
+      cloudLoad().then(a=>{ if(a){ store(a); render(); } });
+    })
+    .subscribe();
+}
+function exportBackup(){
+  const a=load();
+  const blob=new Blob([JSON.stringify(a,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const ln=document.createElement('a');
+  ln.href=url;
+  ln.download='piwkina_'+new Date().toISOString().slice(0,10)+'.json';
+  ln.click(); URL.revokeObjectURL(url);
+}
+function importBackup(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const a=JSON.parse(ev.target.result);
+      if(!Array.isArray(a)) throw 'not array';
+      store(a); render();
+      alert('✅ '+a.length+' შეკვეთა აa��დგა!');
+    }catch(err){ alert('❌ ფაილი არასწორია'); }
+  };
+  r.readAsText(f);
+  e.target.value='';
+}
+
+const ADMIN_PASS='112233';
+let _pendingAdmin='';
+function adminLogin(n){
+  _pendingAdmin=n;
+  document.getElementById('pw-name').textContent=n==='ავთო'?'👨‍💼 ავთო':'👩‍💼 ხათო';
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-err').style.display='none';
+  document.getElementById('pw-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('pw-input').focus(),100);
+}
+function checkPw(){
+  const v=document.getElementById('pw-input').value;
+  if(v===ADMIN_PASS){ closePwModal(); login(_pendingAdmin,'admin'); }
+  else{ document.getElementById('pw-err').style.display='block'; document.getElementById('pw-input').value=''; }
+}
+function closePwModal(){
+  document.getElementById('pw-modal').style.display='none';
+  _pendingAdmin='';
+}
+function login(n,r){
+  me=n; role=r;
+  localStorage.setItem('pw4_session', JSON.stringify({name:n, role:r}));
+  cloudLoad().then(a=>{
+    const local=load();
+    if(a && a.length>0){
+      // Cloud has data — use it, then fix any off-by-one numeric dates
+      store(a);
+      fixNumericDates(a);
+      render();
+    } else if(local.length>0){
+      // Cloud empty but local has data — push all local to cloud
+      Promise.all(local.map(o=>cloudPush(o))).then(()=>render());
+    } else {
+      render();
+    }
+  });
+  startRealtime();
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('huser').textContent=n;
+  if(r==='admin'){
+    document.getElementById('addbtn').style.display='flex';
+    document.getElementById('stats').style.display='grid';
+    document.getElementById('t-orders').style.display='block';
+    setTab('orders');
+  } else {
+    setTab('today');
+  }
+  render();
+}
+async function doRefresh(){
+  const btn=document.getElementById('ref-btn');
+  btn.style.opacity='.4'; btn.style.pointerEvents='none';
+  const a=await cloudLoad();
+  if(a && a.length>0){ store(a); }
+  render();
+  btn.style.opacity='1'; btn.style.pointerEvents='auto';
+}
+function logout(){
+  localStorage.removeItem('pw4_session');
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+  closeForm(); me=''; role='';
+}
+
+function setTab(t){
+  tab=t; calDate='';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.getElementById('t-'+t)?.classList.add('on');
+  render();
+}
+function openCalTab(){
+  const inp=document.getElementById('cal-pick');
+  inp.showPicker?.(); inp.click();
+}
+function pickCalDate(v){
+  if(!v) return;
+  calDate=v; tab='cal';
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  const el=document.getElementById('t-cal');
+  el.classList.add('on');
+  document.getElementById('t-cal-txt').textContent='📆';
+  render();
+}
+
+function openForm(){
+  document.getElementById('form').classList.add('on');
+  document.getElementById('f-raw').focus();
+}
+function closeForm(){
+  document.getElementById('form').classList.remove('on');
+  document.getElementById('f-raw').value='';
+}
+
+function saveOrder(){
+  if(!ADMINS.includes(me)){ alert('მხოლოდ ავთო და ხათო ამატებენ'); return; }
+  let raw = document.getElementById('f-raw').value.trim();
+  if(!raw){ alert('ჩაწერე შეკვეთა'); return; }
+  if(/თ\s*\/\s*წ/i.test(raw) && !raw.includes('📌')){
+    const lines=raw.split('\n'); lines[0]=lines[0].trimEnd()+' 📌'; raw=lines.join('\n');
+  }
+  raw=autoFormat(raw);
+  const newOrder={ id: Date.now(), raw, phone: extractPhone(raw), date: detectDate(raw), courier:'', done:false, by:me };
+  const a=load();
+  a.push(newOrder);
+  store(a); closeForm(); render();
+  cloudPush(newOrder);
+}
+
+let lpTimer=null;
+function startLP(e, id){
+  lpTimer = setTimeout(()=>{ lpTimer=null; showCtx(e,id); },500);
+}
+function endLP(){
+  if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; }
+}
+function showCtx(e, id){
+  ctxId=id;
+  const ctx=document.getElementById('ctx');
+  ctx.classList.add('on');
+  document.getElementById('ctx-bg').style.display='block';
+  const x=e.touches?e.touches[0].clientX:e.clientX;
+  const y=e.touches?e.touches[0].clientY:e.clientY;
+  const cw=ctx.offsetWidth||200, ch=ctx.offsetHeight||220;
+  ctx.style.left = Math.min(x, window.innerWidth-cw-10)+'px';
+  ctx.style.top  = Math.min(y, window.innerHeight-ch-10)+'px';
+  const isAdmin=ADMINS.includes(me);
+  ctx.querySelectorAll('.ctxi')[1].style.display=isAdmin?'flex':'none';
+  ctx.querySelectorAll('.ctxi')[3].style.display=isAdmin?'flex':'none';
+  ctx.querySelectorAll('.ctxi')[4].style.display=isAdmin?'flex':'none';
+}
+function closeCtx(){
+  document.getElementById('ctx').classList.remove('on');
+  document.getElementById('ctx-bg').style.display='none';
+  ctxId=null;
+}
+function ctxCopy(){
+  const o=load().find(x=>x.id===ctxId); if(!o){ closeCtx(); return; }
+  const txt=o.raw||'';
+  navigator.clipboard?.writeText(txt).catch(()=>{
+    const ta=document.createElement('textarea'); ta.value=txt;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  });
+  closeCtx();
+}
+function ctxAssign(){ document.getElementById('modal').classList.add('on'); document.getElementById('ctx').classList.remove('on'); document.getElementById('ctx-bg').style.display='none'; assignId=ctxId; ctxId=null; }
+function ctxDone(){
+  const a=load(), o=a.find(x=>x.id===ctxId); if(o){ if(!ADMINS.includes(me)&&o.done){ closeCtx(); return; } o.done=!o.done; store(a); cloudUpdate(o); }
+  closeCtx(); render();
+}
+function ctxEdit(){
+  const o=load().find(x=>x.id===ctxId); if(!o){ closeCtx(); return; }
+  const savedId=ctxId;
+  document.getElementById('e-raw').value=o.raw||'';
+  highlightEditDate(o.raw||'');
+  document.getElementById('edit-modal').classList.add('on');
+  closeCtx();
+  ctxId=savedId;
+}
+function ctxDelete(){
+  const ok=prompt('🚨 შეკვეთის საბოლოო წაშლა!\n\nდასასტურებლად დაწერე: წაშლა');
+  if(ok!=='წაშლა'){ closeCtx(); return; }
+  const delId=ctxId;
+  store(load().filter(x=>x.id!==delId));
+  cloudDelete(delId);
+  closeCtx(); render();
+}
+
+function setEditDate(d){
+  // highlight button
+  ['edt-today','edt-tom','edt-dag'].forEach(id=>{
+    const b=document.getElementById(id);
+    b.style.borderColor='#e5e5e5'; b.style.background='#fff'; b.style.color='#333';
+  });
+  const map={'დღეს':'edt-today','ხვალ':'edt-tom','ზეგ':'edt-dag'};
+  const sel=document.getElementById(map[d]);
+  if(sel){ sel.style.borderColor='#c0392b'; sel.style.background='#c0392b'; sel.style.color='#fff'; }
+  // replace date word in raw text
+  let raw=document.getElementById('e-raw').value;
+  raw=raw.replace(/(დღეს|ხვალ|ზეგ)/g, d);
+  document.getElementById('e-raw').value=raw;
+}
+function highlightEditDate(raw){
+  const d=detectDate(raw);
+  const map={[today()]:'edt-today',[tom()]:'edt-tom',[dag()]:'edt-dag'};
+  ['edt-today','edt-tom','edt-dag'].forEach(id=>{
+    const b=document.getElementById(id);
+    b.style.borderColor='#e5e5e5'; b.style.background='#fff'; b.style.color='#333';
+  });
+  const selId=map[d];
+  if(selId){ const b=document.getElementById(selId); b.style.borderColor='#c0392b'; b.style.background='#c0392b'; b.style.color='#fff'; }
+}
+function closeEdit(){ document.getElementById('edit-modal').classList.remove('on'); ctxId=null; }
+async function saveEdit(){
+  if(!ADMINS.includes(me)){ closeEdit(); return; }
+  const a=load(), o=a.find(x=>x.id===ctxId);
+  if(o){
+    let raw=document.getElementById('e-raw').value.trim();
+    if(/თ\s*\/\s*წ/i.test(raw) && !raw.includes('📌')){
+      const lines=raw.split('\n'); lines[0]=lines[0].trimEnd()+' 📌'; raw=lines.join('\n');
+    }
+    raw=autoFormat(raw);
+    o.raw   = raw;
+    o.phone = extractPhone(raw);
+    o.date  = detectDate(raw);
+    store(a);
+    await cloudUpdate(o);
+    closeEdit();
+    // Switch to the tab that matches the new date
+    const dateToTab={[today()]:'today',[tom()]:'tom',[dag()]:'dag'};
+    const newTab=dateToTab[o.date];
+    if(newTab) setTab(newTab); else render();
+  } else {
+    closeEdit(); render();
+  }
+}
+
+function closeModal(){ assignId=null; document.getElementById('modal').classList.remove('on'); }
+function assign(n){
+  if(!ADMINS.includes(me)){ closeModal(); return; }
+  const a=load(), o=a.find(x=>x.id===assignId);
+  if(o){ o.courier=n; store(a); cloudUpdate(o); }
+  closeModal(); render();
+}
+
+const CT={'ანდრო':'ct-a','ლევანი':'ct-l','ბექა':'ct-b'};
+
+function tabToDate(t){
+  if(t==='today') return today();
+  if(t==='tom')   return tom();
+  if(t==='dag')   return dag();
+  if(t==='cal')   return calDate||null;
+  return null;
+}
+
+function render(){
+  const all=load();
+  const bar=document.getElementById('daybar');
+  bar.innerHTML=''; bar.style.display='none';
+
+  const isOrdersTab = tab==='orders';
+  document.getElementById('stats').style.display  = (ADMINS.includes(me) && isOrdersTab) ? 'grid' : 'none';
+  document.getElementById('dstats').style.display = (!isOrdersTab) ? 'grid' : 'none';
+
+  if(!isOrdersTab){
+    const fd=tabToDate(tab)||today();
+    const dayOrders=all.filter(o=>o.date===fd);
+    document.getElementById('ds-am').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length;
+    document.getElementById('ds-pm').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
+    document.getElementById('ds-ev').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 2).length;
+  }
+
+  if(ADMINS.includes(me)){
+    document.getElementById('s-all').textContent  = all.length;
+    document.getElementById('s-wait').textContent = all.filter(o=>!o.done).length;
+    document.getElementById('s-done').textContent = all.filter(o=>o.done).length;
+    ['orders','today','tom','dag','cal'].forEach(t=>{
+      const el=document.getElementById('t-'+t); if(!el) return;
+      const old=el.querySelector('.tbadge'); if(old) old.remove();
+      const fd=tabToDate(t);
+      const base=(t==='orders'||!fd)?all:all.filter(o=>o.date===fd);
+      const cnt=base.filter(o=>!o.done).length;
+      if(cnt){
+        const sp=document.createElement('span'); sp.className='tbadge'; sp.textContent=cnt;
+        sp.style.pointerEvents='none'; sp.style.position='relative'; sp.style.zIndex='1';
+        if(t==='cal'){
+          const txt=document.getElementById('t-cal-txt');
+          if(txt && txt.nextSibling && txt.nextSibling.tagName==='INPUT') el.insertBefore(sp, txt.nextSibling);
+          else el.appendChild(sp);
+        } else {
+          el.appendChild(sp);
+        }
+      }
+    });
+  }
+
+  let list=all;
+  if(tab==='orders'){
+    list=[...all].sort((a,b)=>b.id-a.id);
+  } else {
+    const fd=tabToDate(tab);
+    if(fd) list=list.filter(o=>o.date===fd);
+    list.sort((a,b)=>{
+      if(a.date!==b.date) return a.date.localeCompare(b.date);
+      const sb=slotBucket(a.raw||'')-slotBucket(b.raw||'');
+      if(sb!==0) return sb;
+      return a.id-b.id;
+    });
+  }
+
+  const el=document.getElementById('list');
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="emptyic">📭</div><p>შეკვეთა აa�� არის</p></div>'; return; }
+
+  const SLOT_HDR=['🏃 დ ი ლ ა 🏃','🌞 შ უ ა დ ღ ე 🌞','🌛 ს ა ღ ა მ ო 🌛'];
+  const SLOT_COL=['#f39c12','#27ae60','#8e44ad'];
+  let html='';
+
+  if(tab==='orders'){
+    list.forEach(o=>{
+      const ctag=o.courier?(CT[o.courier]||''):'';
+      const ph=(o.phone||'').replace(/\s/g,'');
+      const bk=slotBucket(o.raw||'');
+      const bcol=bk<3?SLOT_COL[bk]:'#c0392b';
+      html+=cardHtml(o, ph, ctag, bcol, true);
+    });
+  } else {
+    const byDate={};
+    list.forEach(o=>{ if(!byDate[o.date]) byDate[o.date]=[]; byDate[o.date].push(o); });
+    Object.keys(byDate).sort().forEach(d=>{
+      const fd=tabToDate(tab);
+      if(!fd){
+        html+=`<div style="font-size:14px;font-weight:900;color:#c0392b;padding:8px 12px;background:#fff5f5;border-radius:12px;margin:14px 0 8px">📅 ${dayName(d)}</div>`;
+      }
+      let lastBucket=-1;
+      byDate[d].forEach(o=>{
+        const bk=slotBucket(o.raw||'');
+        if(bk<3 && bk!==lastBucket){
+          lastBucket=bk;
+          html+=`<div style="display:flex;align-items:center;gap:10px;margin:18px 0 10px">
+            <div style="flex:1;height:2px;background:${SLOT_COL[bk]};border-radius:2px;opacity:.35"></div>
+            <div style="font-size:13px;font-weight:900;color:${SLOT_COL[bk]};letter-spacing:2px;white-space:nowrap">${SLOT_HDR[bk]}</div>
+            <div style="flex:1;height:2px;background:${SLOT_COL[bk]};border-radius:2px;opacity:.35"></div>
+          </div>`;
+        }
+        const ctag=o.courier?(CT[o.courier]||''):'';
+        const ph=(o.phone||'').replace(/\s/g,'');
+        html+=cardHtml(o, ph, ctag, bk<3?SLOT_COL[bk]:'#c0392b', false);
+      });
+    });
+  }
+  el.innerHTML=html;
+
+  document.querySelectorAll('.card').forEach(card=>{
+    const id=+card.dataset.id;
+    card.addEventListener('touchstart',  e=>startLP(e,id), {passive:false});
+    card.addEventListener('contextmenu', e=>{ e.preventDefault(); showCtx(e,id); });
+    card.addEventListener('touchend',    endLP);
+    card.addEventListener('touchcancel', endLP);
+    card.addEventListener('mousedown',   e=>startLP(e,id));
+    card.addEventListener('mouseup',     endLP);
+    card.addEventListener('mouseleave',  endLP);
+  });
+}
+
+function cardHtml(o, ph, ctag, bcol, showDate){
+  const dateBadge = showDate ? `<span style="font-size:10px;background:#f0f0f0;color:#777;padding:2px 7px;border-radius:10px;font-weight:700">${dayName(o.date)}</span>` : '';
+  return `<div class="card ${o.done?'done':''}" data-id="${o.id}" style="border-left-color:${bcol}">
+    <div style="padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+      <div style="flex:1">
+        ${ph?`<a class="phonebtn" href="tel:${esc(ph)}" style="margin-bottom:6px;display:inline-flex">📞 ${esc(o.phone)}</a>`:''}
+        <div style="font-size:15px;color:#222;white-space:pre-line;line-height:1.65;margin-top:${ph?'6':'0'}px">${esc(o.raw||'')}</div>
+      </div>
+      <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        ${dateBadge}
+        ${o.done?'<span class="flag fdone">✅</span>':'<span class="flag fwait">⏳</span>'}
+      </div>
+    </div>
+    <div class="cbot">
+      <span class="ctag ${ctag}">${o.courier?'🏍️ '+esc(o.courier):'— კურიერი —'}</span>
+      <span style="font-size:11px;color:#bbb">⬅ გეჭირე</span>
+    </div>
+  </div>`;
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+(function(){
+  // All users on one screen — admins need password, couriers log in directly
+  const grid = document.getElementById('ugrid');
+  grid.innerHTML=`
+    <button class="ubtn admin" onclick="adminLogin('ავთო')"><span class="av">👨‍💼</span>ავთო</button>
+    <button class="ubtn admin" onclick="adminLogin('ხათო')"><span class="av">👩‍💼</span>ხათო</button>
+    <button class="ubtn" onclick="login('ანდრო','courier')"><span class="av">🚙</span>ანდრო</button>
+    <button class="ubtn" onclick="login('ლევანი','courier')"><span class="av">🚗</span>ლევანი</button>
+    <button class="ubtn" onclick="login('ბექა','courier')" style="grid-column:span 2"><span class="av">🚐</span>ბექა</button>`;
+  // Auto-login from saved session
+  try{
+    const s=JSON.parse(localStorage.getItem('pw4_session')||'null');
+    if(s && s.name && s.role) login(s.name, s.role);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
