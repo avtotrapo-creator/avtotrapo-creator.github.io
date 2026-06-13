@@ -210,7 +210,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
       <div class="stat"><div class="snum" id="s-wait" style="color:#f39c12">0</div><div class="slbl">მოლოდინი</div></div>
       <div class="stat"><div class="snum" id="s-done" style="color:#27ae60">0</div><div class="slbl">მიტანილი</div></div>
     </div>
-    <div class="stats" id="dstats" style="display:none">
+    <div class="stats" id="dstats" style="display:none;grid-template-columns:1fr 1fr 1fr 1fr">
+      <div class="stat"><div class="snum" id="ds-total" style="color:#c0392b">0</div><div class="slbl">სულ</div></div>
       <div class="stat"><div class="snum" id="ds-am" style="color:#f39c12">0</div><div class="slbl">🏃 დილა</div></div>
       <div class="stat"><div class="snum" id="ds-pm" style="color:#27ae60">0</div><div class="slbl">🌞 შუადღე</div></div>
       <div class="stat"><div class="snum" id="ds-ev" style="color:#8e44ad">0</div><div class="slbl">🌛 საღამო</div></div>
@@ -415,7 +416,7 @@ function importBackup(e){
       const a=JSON.parse(ev.target.result);
       if(!Array.isArray(a)) throw 'not array';
       store(a); render();
-      alert('✅ '+a.length+' შეკვეთა აa��დგა!');
+      alert('✅ '+a.length+' შეკვეთა აღდგა!');
     }catch(err){ alert('❌ ფაილი არასწორია'); }
   };
   r.readAsText(f);
@@ -549,7 +550,7 @@ function showCtx(e, id){
   ctx.style.left = Math.min(x, window.innerWidth-cw-10)+'px';
   ctx.style.top  = Math.min(y, window.innerHeight-ch-10)+'px';
   const isAdmin=ADMINS.includes(me);
-  ctx.querySelectorAll('.ctxi')[1].style.display=isAdmin?'flex':'none';
+  ctx.querySelectorAll('.ctxi')[1].style.display='flex'; // კურიერი - ყველას
   ctx.querySelectorAll('.ctxi')[3].style.display=isAdmin?'flex':'none';
   ctx.querySelectorAll('.ctxi')[4].style.display=isAdmin?'flex':'none';
 }
@@ -669,6 +670,7 @@ function render(){
   if(!isOrdersTab){
     const fd=tabToDate(tab)||today();
     const dayOrders=all.filter(o=>o.date===fd);
+    document.getElementById('ds-total').textContent=dayOrders.length;
     document.getElementById('ds-am').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length;
     document.getElementById('ds-pm').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
     document.getElementById('ds-ev').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 2).length;
@@ -713,7 +715,7 @@ function render(){
   }
 
   const el=document.getElementById('list');
-  if(!list.length){ el.innerHTML='<div class="empty"><div class="emptyic">📭</div><p>შეკვეთა აa�� არის</p></div>'; return; }
+  if(!list.length){ el.innerHTML='<div class="empty"><div class="emptyic">📭</div><p>შეკვეთა არ არის</p></div>'; return; }
 
   const SLOT_HDR=['🏃 დ ი ლ ა 🏃','🌞 შ უ ა დ ღ ე 🌞','🌛 ს ა ღ ა მ ო 🌛'];
   const SLOT_COL=['#f39c12','#27ae60','#8e44ad'];
