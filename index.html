@@ -536,13 +536,18 @@ function saveOrder(){
   cloudPush(newOrder);
 }
 
-let lpTimer=null;
-function startLP(e, id){
-  lpTimer = setTimeout(()=>{ lpTimer=null; showCtx(e,id); },500);
+let _lastTap={id:null,t:0};
+function handleTap(e, id){
+  const now=Date.now();
+  if(_lastTap.id===id && now-_lastTap.t<400){
+    _lastTap={id:null,t:0};
+    showCtx(e,id);
+  } else {
+    _lastTap={id,t:now};
+  }
 }
-function endLP(){
-  if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; }
-}
+function startLP(e,id){}
+function endLP(){}
 function showCtx(e, id){
   if(!ADMINS.includes(me)) return;
   ctxId=id;
@@ -765,13 +770,9 @@ function render(){
 
   document.querySelectorAll('.card').forEach(card=>{
     const id=+card.dataset.id;
-    card.addEventListener('touchstart',  e=>startLP(e,id), {passive:false});
+    card.addEventListener('touchend',    e=>handleTap(e,id), {passive:true});
     card.addEventListener('contextmenu', e=>{ e.preventDefault(); showCtx(e,id); });
-    card.addEventListener('touchend',    endLP);
-    card.addEventListener('touchcancel', endLP);
-    card.addEventListener('mousedown',   e=>startLP(e,id));
-    card.addEventListener('mouseup',     endLP);
-    card.addEventListener('mouseleave',  endLP);
+    card.addEventListener('dblclick',    e=>showCtx(e,id));
   });
 }
 
