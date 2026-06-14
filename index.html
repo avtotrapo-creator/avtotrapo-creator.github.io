@@ -202,9 +202,9 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
     <div class="tab" onclick="setTab('today')" id="t-today">დღეს</div>
     <div class="tab" onclick="setTab('tom')" id="t-tom">ხვალ</div>
     <div class="tab" onclick="setTab('dag')" id="t-dag">ზეგ</div>
-    <div class="tab" id="t-cal" style="font-size:18px;position:relative;overflow:hidden">
+    <div class="tab" id="t-cal" style="font-size:18px;position:relative;" onclick="openCalTab()">
       <span id="t-cal-txt" style="pointer-events:none;position:relative;z-index:1">📆</span>
-      <input type="date" id="cal-pick" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.001;cursor:pointer;z-index:2;-webkit-appearance:none;background:transparent;border:none;padding:0;margin:0;font-size:16px" onchange="pickCalDate(this.value)">
+      <input type="date" id="cal-pick" style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;border:none;padding:0;margin:0;" onchange="pickCalDate(this.value)">
     </div>
   </div>
 
@@ -500,7 +500,16 @@ function setTab(t){
 }
 function openCalTab(){
   const inp=document.getElementById('cal-pick');
-  inp.showPicker?.(); inp.click();
+  inp.style.pointerEvents='auto';
+  inp.style.width='100%'; inp.style.height='100%';
+  inp.style.position='fixed'; inp.style.top='0'; inp.style.left='0';
+  inp.style.opacity='0.001'; inp.style.zIndex='9999';
+  if(inp.showPicker){ try{ inp.showPicker(); }catch(e){} }
+  else { inp.focus(); inp.click(); }
+  setTimeout(()=>{
+    inp.style.position='absolute'; inp.style.width='1px'; inp.style.height='1px';
+    inp.style.top='0'; inp.style.left='0'; inp.style.zIndex=''; inp.style.pointerEvents='none';
+  }, 3000);
 }
 function pickCalDate(v){
   if(!v) return;
