@@ -203,7 +203,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
     <div class="tab" onclick="setTab('tom')" id="t-tom">ხვალ</div>
     <div class="tab" onclick="setTab('dag')" id="t-dag">ზეგ</div>
     <div class="tab" id="t-cal" style="font-size:18px;position:relative;" onclick="openCalTab()">
-      <span id="t-cal-txt" style="pointer-events:none;position:relative;z-index:1">📆</span>
+      <span id="t-cal-txt" style="pointer-events:none;position:relative;z-index:1;display:inline-flex;flex-direction:column;align-items:center;width:24px;height:22px;border:2px solid currentColor;border-radius:4px;overflow:hidden;line-height:1;vertical-align:middle">
+        <span style="display:block;background:currentColor;width:100%;height:7px"></span>
+        <span id="cal-day-num" style="display:block;font-size:11px;font-weight:900;line-height:15px;text-align:center;width:100%"></span>
+      </span>
       <input type="date" id="cal-pick" style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;border:none;padding:0;margin:0;" onchange="pickCalDate(this.value)">
     </div>
   </div>
@@ -294,6 +297,12 @@ function dayName(d){
   if(d===dag())   return 'ზეგ';
   const [,m,day]=d.split('-');
   return +day+' '+['იანვ','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'][+m-1];
+}
+function separatorLabel(d){
+  const n=dayName(d);
+  const dayNum=+d.split('-')[2];
+  if(n==='დღეს'||n==='ხვალ'||n==='ზეგ') return n+' '+dayNum;
+  return n;
 }
 function detectDate(raw){
   if(/დღეს/i.test(raw)) return today();
@@ -517,7 +526,6 @@ function pickCalDate(v){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
   const el=document.getElementById('t-cal');
   el.classList.add('on');
-  document.getElementById('t-cal-txt').textContent='📆';
   render();
 }
 
@@ -681,6 +689,8 @@ function tabToDate(t){
 
 function render(){
   const all=load();
+  const cdn=document.getElementById('cal-day-num');
+  if(cdn) cdn.textContent=new Date().getDate();
   const bar=document.getElementById('daybar');
   bar.innerHTML=''; bar.style.display='none';
 
@@ -754,7 +764,7 @@ function render(){
     });
     Object.keys(byReceived).sort().reverse().forEach(d=>{
       html+=`<div style="margin:18px 0 10px;border-radius:12px;overflow:hidden;background:#c0392b;display:flex;align-items:center;justify-content:center;height:36px">
-        <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px">${dayName(d)}</span>
+        <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px">${separatorLabel(d)}</span>
       </div>`;
       byReceived[d].forEach(o=>{
         const ctag=o.courier?(CT[o.courier]||''):'';
