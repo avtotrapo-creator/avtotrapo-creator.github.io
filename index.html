@@ -754,7 +754,7 @@ function render(){
     });
     Object.keys(byReceived).sort().reverse().forEach(d=>{
       html+=`<div style="margin:18px 0 10px;border-radius:12px;overflow:hidden;background:#c0392b;display:flex;align-items:center;justify-content:center;height:36px">
-        <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px">📅 ${dayName(d)}</span>
+        <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:1px">${dayName(d)}</span>
       </div>`;
       byReceived[d].forEach(o=>{
         const ctag=o.courier?(CT[o.courier]||''):'';
