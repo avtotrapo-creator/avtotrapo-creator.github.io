@@ -210,8 +210,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 
   <div class="wrap">
     <div class="stats" id="stats" style="display:none">
-      <div class="stat"><div class="snum" id="s-all">0</div><div class="slbl">სულ</div></div>
-      <div class="stat"><div class="snum" id="s-wait" style="color:#f39c12">0</div><div class="slbl">მოლოდინი</div></div>
+      <div class="stat"><div class="snum" id="s-all">0</div><div class="slbl">დღეს სულ</div></div>
+      <div class="stat"><div class="snum" id="s-wait" style="color:#f39c12">0</div><div class="slbl">დღეს მოლოდინი</div></div>
       <div class="stat"><div class="snum" id="s-done" style="color:#27ae60">0</div><div class="slbl">მიტანილი</div></div>
     </div>
     <div class="stats" id="dstats" style="display:none;grid-template-columns:1fr 1fr 1fr 1fr">
@@ -689,9 +689,11 @@ function render(){
   }
 
   if(ADMINS.includes(me)){
-    document.getElementById('s-all').textContent  = all.length;
-    document.getElementById('s-wait').textContent = all.filter(o=>!o.done).length;
-    document.getElementById('s-done').textContent = all.filter(o=>o.done).length;
+    const todayStr=today();
+    const todayReceived=all.filter(o=>ymd(new Date(o.id))===todayStr);
+    document.getElementById('s-all').textContent  = todayReceived.length;
+    document.getElementById('s-wait').textContent = todayReceived.filter(o=>!o.done).length;
+    document.getElementById('s-done').textContent = todayReceived.filter(o=>o.done).length;
     ['orders','today','tom','dag','cal'].forEach(t=>{
       const el=document.getElementById('t-'+t); if(!el) return;
       const old=el.querySelector('.tbadge'); if(old) old.remove();
