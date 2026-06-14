@@ -691,9 +691,10 @@ function render(){
   if(ADMINS.includes(me)){
     const todayStr=today();
     const todayReceived=all.filter(o=>ymd(new Date(o.id))===todayStr);
+    const todayDelivery=todayReceived.filter(o=>o.date===todayStr);
     document.getElementById('s-all').textContent  = todayReceived.length;
-    document.getElementById('s-wait').textContent = todayReceived.filter(o=>!o.done).length;
-    document.getElementById('s-done').textContent = todayReceived.filter(o=>o.done).length;
+    document.getElementById('s-wait').textContent = todayDelivery.filter(o=>!o.done).length;
+    document.getElementById('s-done').textContent = todayDelivery.filter(o=>o.done).length;
     ['orders','today','tom','dag','cal'].forEach(t=>{
       const el=document.getElementById('t-'+t); if(!el) return;
       const old=el.querySelector('.tbadge'); if(old) old.remove();
