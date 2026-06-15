@@ -988,6 +988,8 @@ function render(){
     if(fd) list=list.filter(o=>o.date===fd);
     list.sort((a,b)=>{
       if(a.date!==b.date) return a.date.localeCompare(b.date);
+      const ba=slotBucket(a.raw||''), bb=slotBucket(b.raw||'');
+      if(ba!==bb) return ba-bb;
       return a.id-b.id;
     });
   }
