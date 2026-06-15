@@ -616,13 +616,8 @@ function login(n,r){
   }
   render();
 }
-async function doRefresh(){
-  const btn=document.getElementById('ref-btn');
-  btn.style.opacity='.4'; btn.style.pointerEvents='none';
-  const a=await cloudLoad();
-  if(a && a.length>0){ store(a); }
-  render();
-  btn.style.opacity='1'; btn.style.pointerEvents='auto';
+function doRefresh(){
+  location.reload();
 }
 function logout(){
   localStorage.removeItem('pw4_session');
