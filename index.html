@@ -303,6 +303,18 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 </div>
 <div id="ctx-bg" style="display:none;position:fixed;inset:0;z-index:299" onclick="closeCtx()"></div>
 
+<!-- COURIER DELIVERY CONFIRM MODAL -->
+<div id="dlv-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;padding:20px 16px;" onclick="closeDlvModal()">
+  <div style="background:#fff;border-radius:22px;padding:24px 20px;width:100%;max-width:420px;text-align:center;" onclick="event.stopPropagation()">
+    <div style="font-size:44px;margin-bottom:6px">🚙</div>
+    <div style="font-size:17px;font-weight:900;margin-bottom:4px">მიტანის დადასტურება</div>
+    <div style="font-size:12px;color:#bbb;margin-bottom:16px">დარწმუნებული ხარ?</div>
+    <div id="dlv-info" style="font-size:13px;color:#555;margin-bottom:20px;text-align:left;background:#f9f9f9;padding:12px 14px;border-radius:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto"></div>
+    <button onclick="confirmDelivery()" style="width:100%;padding:16px;background:#27ae60;color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;margin-bottom:10px;box-shadow:0 4px 14px rgba(39,174,96,.3)">✅ მიტანილია</button>
+    <button onclick="closeDlvModal()" style="width:100%;padding:13px;background:#f0f0f0;color:#888;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">გაუქმება</button>
+  </div>
+</div>
+
 <script>
 const ADMINS = ['ავთო','ხათო'];
 let me='', role='', tab='all', assignId=null, calDate='';
@@ -602,10 +614,33 @@ function handleTap(e, id){
   const now=Date.now();
   if(_lastTap.id===id && now-_lastTap.t<400){
     _lastTap={id:null,t:0};
-    showCtx(e,id);
+    if(ADMINS.includes(me)) showCtx(e,id);
+    else showCourierConfirm(id);
   } else {
     _lastTap={id,t:now};
   }
+}
+
+let _dlvId=null;
+function showCourierConfirm(id){
+  const o=load().find(x=>x.id===id); if(!o||o.done) return;
+  _dlvId=id;
+  const el=document.getElementById('dlv-info');
+  let txt='';
+  if(o.phone) txt+='📞 '+o.phone+'\n';
+  txt+=o.raw||'';
+  el.textContent=txt;
+  document.getElementById('dlv-modal').style.display='flex';
+}
+function closeDlvModal(){
+  document.getElementById('dlv-modal').style.display='none';
+  _dlvId=null;
+}
+function confirmDelivery(){
+  if(!_dlvId) return;
+  const a=load(), o=a.find(x=>x.id===_dlvId);
+  if(o){ o.done=true; store(a); cloudUpdate(o); }
+  closeDlvModal(); render();
 }
 function startLP(e,id){}
 function endLP(){}
@@ -943,8 +978,8 @@ function render(){
   document.querySelectorAll('.card').forEach(card=>{
     const id=+card.dataset.id;
     card.addEventListener('touchend',    e=>handleTap(e,id), {passive:true});
-    card.addEventListener('contextmenu', e=>{ e.preventDefault(); showCtx(e,id); });
-    card.addEventListener('dblclick',    e=>showCtx(e,id));
+    card.addEventListener('contextmenu', e=>{ e.preventDefault(); if(ADMINS.includes(me)) showCtx(e,id); else showCourierConfirm(id); });
+    card.addEventListener('dblclick',    e=>{ if(ADMINS.includes(me)) showCtx(e,id); else showCourierConfirm(id); });
   });
 }
 
