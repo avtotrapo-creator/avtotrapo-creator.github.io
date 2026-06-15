@@ -117,7 +117,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .crow.weight { color:#c0392b; font-weight:700; font-size:14px; }
 
 .cbot  { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-top:1px solid #f5f5f5; }
-.ctag  { font-size:12px; font-weight:800; padding:4px 11px; border-radius:20px; background:#f0f0f0; color:#666; }
+.ctag  { font-size:15px; font-weight:800; padding:6px 14px; border-radius:20px; background:#f0f0f0; color:#666; }
 .ct-a  { background:#dbeafe; color:#1d4ed8; }
 .ct-l  { background:#fee2e2; color:#b91c1c; }
 .ct-b  { background:#f1f5f9; color:#334155; }
@@ -863,6 +863,7 @@ function assign(n){
 }
 
 const CT={'ანდრო':'ct-a','ლევანი':'ct-l','ბექა':'ct-b'};
+const COURIER_CAR={'ანდრო':'🚙','ლევანი':'🚗','ბექა':'🚐'};
 
 function tabToDate(t){
   if(t==='today') return today();
@@ -1104,7 +1105,7 @@ function cardHtml(o, ph, ctag, bcol, showDate, isDuplicate){
       </div>
     </div>
     <div class="cbot">
-      <span class="ctag ${ctag}">${o.courier?'🏍️ '+esc(o.courier):'— კურიერი —'}</span>
+      <span class="ctag ${ctag}">${o.courier?(COURIER_CAR[o.courier]||'🚗')+' '+esc(o.courier):'— კურიერი —'}</span>
     </div>
   </div>`;
 }
