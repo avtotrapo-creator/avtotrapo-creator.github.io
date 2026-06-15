@@ -1070,9 +1070,23 @@ function render(){
   });
 }
 
+function getRatings(){ try{return JSON.parse(localStorage.getItem('pw4_ratings')||'{}');}catch(e){return{};} }
+function setRating(id,val){ const r=getRatings(); if(r[id]===val) delete r[id]; else r[id]=val; localStorage.setItem('pw4_ratings',JSON.stringify(r)); render(); }
+
 function cardHtml(o, ph, ctag, bcol, showDate, isDuplicate){
   const dateBadge = showDate ? `<span class="date-badge" style="font-size:10px;background:#f0f0f0;padding:2px 7px;border-radius:10px;font-weight:700">${dayName(o.date)}</span>` : '';
   const dupLabel = isDuplicate ? `<span style="font-size:10px;font-weight:900;color:#e74c3c;padding:2px 7px;border-radius:10px;margin-bottom:4px;display:inline-block">⚠️ განმეორება</span>` : '';
+  const myRating = getRatings()[o.id] || null;
+  const isMyCourier = !ADMINS.includes(me) && o.courier === me;
+  let ratingArea = '';
+  if(isMyCourier){
+    ratingArea = `<div style="display:flex;gap:4px;margin-top:5px">
+      <button onclick="event.stopPropagation();setRating(${o.id},'up')" style="background:${myRating==='up'?'#dcfce7':'rgba(128,128,128,.15)'};border:none;border-radius:16px;padding:3px 9px;font-size:18px;cursor:pointer;line-height:1">👍</button>
+      <button onclick="event.stopPropagation();setRating(${o.id},'down')" style="background:${myRating==='down'?'#fee2e2':'rgba(128,128,128,.15)'};border:none;border-radius:16px;padding:3px 9px;font-size:18px;cursor:pointer;line-height:1">👎</button>
+    </div>`;
+  } else if(myRating){
+    ratingArea = `<div style="font-size:20px;margin-top:4px">${myRating==='up'?'👍':'👎'}</div>`;
+  }
   return `<div class="card ${o.done?'done':''} ${isDuplicate?'duplicate':''}" data-id="${o.id}" style="border-left-color:${isDuplicate?'#e74c3c':bcol}">
     <div style="padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
       <div style="flex:1">
@@ -1083,11 +1097,11 @@ function cardHtml(o, ph, ctag, bcol, showDate, isDuplicate){
       <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         ${dateBadge}
         ${o.done?'<span class="flag fdone" style="font-size:22px;line-height:1">✅</span>':'<span class="flag fwait">⏳</span>'}
+        ${ratingArea}
       </div>
     </div>
     <div class="cbot">
       <span class="ctag ${ctag}">${o.courier?'🏍️ '+esc(o.courier):'— კურიერი —'}</span>
-      <span class="card-hint" style="font-size:11px">⬅ გეჭირე</span>
     </div>
   </div>`;
 }
