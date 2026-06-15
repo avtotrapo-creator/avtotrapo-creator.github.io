@@ -160,6 +160,18 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .edit-cancel { padding:13px 18px; background:#f0f0f0; color:#888; border:none; border-radius:12px; font-size:14px; cursor:pointer; }
 
 /* DARK MODE */
+
+.card-text { color:#222; }
+.card-hint { color:#555; }
+.date-badge { color:#777; }
+body.dark .card-text { color:#f0f0f0; }
+body.dark .card-hint { color:#aaa; }
+body.dark .date-badge { color:#ccc; background:#333 !important; }
+body.dark .cbot { border-top-color:#333; }
+body.dark #ctx-menu { background:#1e1e1e; border:1px solid #333; }
+body.dark .cmitem { color:#eee; border-bottom-color:#333; }
+body.dark .ctag { background:#2a2a2a; color:#ccc; border-color:#444; }
+
 body.dark { background:#111; color:#f0f0f0; }
 body.dark #login { background:#1a1a1a; }
 body.dark .tabs { background:#1e1e1e; border-bottom-color:#333; }
@@ -1025,7 +1037,7 @@ function render(){
 }
 
 function cardHtml(o, ph, ctag, bcol, showDate){
-  const dateBadge = showDate ? `<span style="font-size:10px;background:#f0f0f0;color:#777;padding:2px 7px;border-radius:10px;font-weight:700">${dayName(o.date)}</span>` : '';
+  const dateBadge = showDate ? `<span class="date-badge" style="font-size:10px;background:#f0f0f0;padding:2px 7px;border-radius:10px;font-weight:700">${dayName(o.date)}</span>` : '';
   return `<div class="card ${o.done?'done':''}" data-id="${o.id}" style="border-left-color:${bcol}">
     <div style="padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
       <div style="flex:1">
@@ -1039,7 +1051,7 @@ function cardHtml(o, ph, ctag, bcol, showDate){
     </div>
     <div class="cbot">
       <span class="ctag ${ctag}">${o.courier?'🏍️ '+esc(o.courier):'— კურიერი —'}</span>
-      <span style="font-size:11px;color:#555">⬅ გეჭირე</span>
+      <span class="card-hint" style="font-size:11px">⬅ გეჭირე</span>
     </div>
   </div>`;
 }
