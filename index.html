@@ -52,7 +52,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
 .stat  { background:#fff; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,.05); }
 .snum  { font-size:28px; font-weight:900; color:#c0392b; }
-.slbl  { font-size:10px; color:#bbb; margin-top:2px; }
+.slbl  { font-size:10px; color:#555; margin-top:2px; }
 
 .addbtn { width:100%; padding:15px; background:#c0392b; color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:900; cursor:pointer; margin-bottom:14px; display:none; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(192,57,43,.3); }
 .addbtn:active { transform:scale(.98); }
@@ -63,7 +63,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 
 .fgroup { padding:14px 16px; border-bottom:1px solid #f0f0f0; }
 .fgroup:last-child { border-bottom:none; }
-.fglabel { font-size:10px; font-weight:800; color:#bbb; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
+.fglabel { font-size:10px; font-weight:800; color:#555; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
 
 .g1row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .finp { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; background:#fafafa; transition:border .15s; }
@@ -126,7 +126,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .aassign { background:#dbeafe; color:#1d4ed8; }
 .adone   { background:#dcfce7; color:#15803d; }
 
-.empty { text-align:center; padding:55px 20px; color:#ccc; }
+.empty { text-align:center; padding:55px 20px; color:#777; }
 .emptyic { font-size:52px; margin-bottom:8px; }
 
 .ctxmenu { display:none; position:fixed; z-index:300; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.18); overflow:hidden; min-width:180px; }
@@ -152,7 +152,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .edit-box { background:#fff; border-radius:22px 22px 0 0; padding:20px; width:100%; max-width:480px; }
 .edit-box h3 { font-size:15px; font-weight:900; margin-bottom:14px; color:#c0392b; }
 .edit-row { margin-bottom:10px; }
-.edit-row label { font-size:11px; font-weight:700; color:#bbb; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
+.edit-row label { font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
 .edit-row input { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; }
 .edit-row input:focus { border-color:#c0392b; }
 .edit-acts { display:flex; gap:8px; margin-top:14px; }
@@ -176,7 +176,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
   <div style="background:#fff;border-radius:22px;padding:28px 24px;width:90%;max-width:320px;text-align:center;">
     <div style="font-size:36px;margin-bottom:6px">🔐</div>
     <div style="font-size:17px;font-weight:900;margin-bottom:4px" id="pw-name"></div>
-    <div style="font-size:12px;color:#bbb;margin-bottom:18px">შეიყვანე პაროლი</div>
+    <div style="font-size:12px;color:#555;margin-bottom:18px">შეიყვანე პაროლი</div>
     <input id="pw-input" type="password" inputmode="numeric" maxlength="12"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       style="width:100%;padding:14px;border:2px solid #eee;border-radius:14px;font-size:24px;letter-spacing:6px;text-align:center;outline:none;font-family:inherit"
@@ -224,8 +224,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
     <div id="courier-stats" style="display:none;background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,.05)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <button onclick="toggleCsCollapse()" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0">
-          <span style="font-size:11px;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.6px">კურიერები</span>
-          <span id="cs-arrow" style="font-size:12px;color:#bbb">▼</span>
+          <span style="font-size:11px;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:.6px">კურიერები</span>
+          <span id="cs-arrow" style="font-size:12px;color:#555">▼</span>
         </button>
         <div style="display:flex;gap:5px">
           <button id="cs-btn-today" onclick="setCsPeriod('today')" style="padding:4px 9px;border-radius:10px;border:none;font-size:11px;font-weight:800;cursor:pointer;background:#f0f0f0;color:#888">დღეს</button>
@@ -308,7 +308,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
   <div style="background:#fff;border-radius:22px;padding:24px 20px;width:100%;max-width:420px;text-align:center;" onclick="event.stopPropagation()">
     <div style="font-size:44px;margin-bottom:6px">🚙</div>
     <div style="font-size:17px;font-weight:900;margin-bottom:4px">მიტანის დადასტურება</div>
-    <div style="font-size:12px;color:#bbb;margin-bottom:16px">დარწმუნებული ხარ?</div>
+    <div style="font-size:12px;color:#555;margin-bottom:16px">დარწმუნებული ხარ?</div>
     <div id="dlv-info" style="font-size:13px;color:#555;margin-bottom:20px;text-align:left;background:#f9f9f9;padding:12px 14px;border-radius:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto"></div>
     <button onclick="confirmDelivery()" style="width:100%;padding:16px;background:#27ae60;color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;margin-bottom:10px;box-shadow:0 4px 14px rgba(39,174,96,.3)">✅ მიტანილია</button>
     <button onclick="closeDlvModal()" style="width:100%;padding:13px;background:#f0f0f0;color:#888;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">გაუქმება</button>
@@ -848,13 +848,13 @@ function renderCourierStats(){
         </div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:16px;font-weight:900;color:#27ae60">${done}<span style="font-size:11px;color:#bbb;font-weight:600"> ✓</span></div>
-        <div style="font-size:10px;color:#bbb">${total} სულ</div>
+        <div style="font-size:16px;font-weight:900;color:#27ae60">${done}<span style="font-size:11px;color:#555;font-weight:600"> ✓</span></div>
+        <div style="font-size:10px;color:#555">${total} სულ</div>
       </div>
     </div>`;
   });
   const lbl=csPeriod==='today'?'დღეს':csPeriod==='month'?GEO_MONTHS[now.getMonth()]+' '+now.getFullYear():'ყველა დრო';
-  html+=`<div style="font-size:10px;color:#ccc;margin-top:8px;text-align:center">${lbl}</div>`;
+  html+=`<div style="font-size:10px;color:#777;margin-top:8px;text-align:center">${lbl}</div>`;
   el.innerHTML=html;
 }
 
@@ -998,7 +998,7 @@ function cardHtml(o, ph, ctag, bcol, showDate){
     </div>
     <div class="cbot">
       <span class="ctag ${ctag}">${o.courier?'🏍️ '+esc(o.courier):'— კურიერი —'}</span>
-      <span style="font-size:11px;color:#bbb">⬅ გეჭირე</span>
+      <span style="font-size:11px;color:#555">⬅ გეჭირე</span>
     </div>
   </div>`;
 }
