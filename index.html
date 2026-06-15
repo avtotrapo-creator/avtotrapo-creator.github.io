@@ -263,9 +263,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
     <h3>✏️ შეკვეთის ჩასწორება</h3>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
       <button onclick="setEditDate('დღეს')" id="edt-today" style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">🌤 დღეს</button>
-      <button onclick="setEditDate('ხვალ')" id="edt-tom"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">📅 ხვალ</button>
-      <button onclick="setEditDate('ზეგ')"  id="edt-dag"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">📆 ზეგ</button>
+      <button onclick="setEditDate('ხვალ')" id="edt-tom"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">ხვალ</button>
+      <button onclick="setEditDate('ზეგ')"  id="edt-dag"   style="flex:1;padding:9px;border:2px solid #e5e5e5;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;">ზეგ</button>
     </div>
+    <div id="edt-weekdays" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;"></div>
     <div class="edit-row"><textarea id="e-raw" rows="7" style="width:100%;padding:11px 13px;border:1.5px solid #e8e8e8;border-radius:12px;font-size:15px;font-family:inherit;outline:none;resize:none;line-height:1.6"></textarea></div>
     <div class="edit-acts">
       <button class="edit-cancel" onclick="closeEdit()">გაუქმება</button>
@@ -293,23 +294,34 @@ function ymd(d){ const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(); retur
 function today(){ return ymd(new Date()); }
 function tom()  { const d=new Date(); d.setDate(d.getDate()+1); return ymd(d); }
 function dag()  { const d=new Date(); d.setDate(d.getDate()+2); return ymd(d); }
+const GEO_WDAYS=[['კვირა',0],['ორშაბათი',1],['სამშაბათი',2],['ოთხშაბათი',3],['ხუთშაბათი',4],['პარასკევი',5],['შაბათი',6]];
+const GEO_WSHORT=['კვი','ორშ','სამ','ოთხ','ხუთ','პარ','შაბ'];
+function weekdayDate(wd){
+  const now=new Date(); let diff=wd-now.getDay();
+  if(diff<=0) diff+=7;
+  const d=new Date(now); d.setDate(now.getDate()+diff); return ymd(d);
+}
 function dayName(d){
   if(d===today()) return 'დღეს';
   if(d===tom())   return 'ხვალ';
   if(d===dag())   return 'ზეგ';
-  const [,m,day]=d.split('-');
-  return +day+' '+['იანვ','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'][+m-1];
+  const [y,m,day]=d.split('-');
+  const dt=new Date(+y,+m-1,+day);
+  return GEO_WSHORT[dt.getDay()]+', '+parseInt(day)+' '+['იანვ','თებ','მარ','აპრ','მაი','ივნ','ივლ','აგვ','სექ','ოქტ','ნოე','დეკ'][+m-1];
 }
 function separatorLabel(d){
   const n=dayName(d);
   const dayNum=+d.split('-')[2];
   if(n==='დღეს'||n==='ხვალ'||n==='ზეგ') return n+' '+dayNum;
-  return n;
+  return n; // already contains weekday + date
 }
 function detectDate(raw){
   if(/დღეს/i.test(raw)) return today();
   if(/ზეგ/i.test(raw))  return dag();
   if(/ხვალ/i.test(raw)) return tom();
+  for(const [name,wd] of GEO_WDAYS){
+    if(new RegExp(name,'i').test(raw)) return weekdayDate(wd);
+  }
   const dm = raw.match(/(?:^|\n)(\d{1,2})\s*[-–]?\s*შ(?!ე)/);
   if(dm){
     const day=parseInt(dm[1]);
@@ -620,6 +632,7 @@ function ctxEdit(){
   const o=load().find(x=>x.id===ctxId); if(!o){ closeCtx(); return; }
   const savedId=ctxId;
   document.getElementById('e-raw').value=o.raw||'';
+  initEditDateButtons();
   highlightEditDate(o.raw||'');
   document.getElementById('edit-modal').classList.add('on');
   closeCtx();
@@ -634,29 +647,62 @@ function ctxDelete(){
   closeCtx(); render();
 }
 
-function setEditDate(d){
-  // highlight button
+function _allEditBtnsReset(){
   ['edt-today','edt-tom','edt-dag'].forEach(id=>{
     const b=document.getElementById(id);
-    b.style.borderColor='#e5e5e5'; b.style.background='#fff'; b.style.color='#333';
+    if(b){b.style.borderColor='#e5e5e5';b.style.background='#fff';b.style.color='#333';}
   });
+  document.querySelectorAll('#edt-weekdays button').forEach(b=>{
+    b.style.borderColor='#e5e5e5';b.style.background='#fff';b.style.color='#333';
+  });
+}
+function _wdRe(){
+  return new RegExp('(დღეს|ხვალ|ზეგ|'+GEO_WDAYS.map(x=>x[0]).join('|')+')','gi');
+}
+function setEditDate(d){
+  _allEditBtnsReset();
   const map={'დღეს':'edt-today','ხვალ':'edt-tom','ზეგ':'edt-dag'};
   const sel=document.getElementById(map[d]);
-  if(sel){ sel.style.borderColor='#c0392b'; sel.style.background='#c0392b'; sel.style.color='#fff'; }
-  // replace date word in raw text
+  if(sel){sel.style.borderColor='#c0392b';sel.style.background='#c0392b';sel.style.color='#fff';}
   let raw=document.getElementById('e-raw').value;
-  raw=raw.replace(/(დღეს|ხვალ|ზეგ)/g, d);
+  raw=raw.replace(_wdRe(), d);
   document.getElementById('e-raw').value=raw;
+}
+function setEditDateWd(ds,wname,btnId){
+  _allEditBtnsReset();
+  const sel=document.getElementById(btnId);
+  if(sel){sel.style.borderColor='#c0392b';sel.style.background='#c0392b';sel.style.color='#fff';}
+  let raw=document.getElementById('e-raw').value;
+  raw=raw.replace(_wdRe(), wname);
+  document.getElementById('e-raw').value=raw;
+}
+function initEditDateButtons(){
+  const c=document.getElementById('edt-weekdays');
+  if(!c) return;
+  c.innerHTML='';
+  const now=new Date();
+  for(let i=3;i<=7;i++){
+    const d=new Date(now); d.setDate(now.getDate()+i);
+    const wd=d.getDay(); const ds=ymd(d);
+    const wname=GEO_WDAYS.find(x=>x[1]===wd)[0];
+    const id='edt-wd-'+i;
+    const btn=document.createElement('button');
+    btn.style.cssText='flex:1;min-width:48px;padding:7px 3px;border:2px solid #e5e5e5;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#333;text-align:center;line-height:1.3';
+    btn.innerHTML=GEO_WSHORT[wd]+'<br><span style="font-size:10px;font-weight:500;color:#888">'+d.getDate()+'</span>';
+    btn.id=id; btn.dataset.ds=ds;
+    btn.onclick=((_ds,_wn,_id)=>()=>setEditDateWd(_ds,_wn,_id))(ds,wname,id);
+    c.appendChild(btn);
+  }
 }
 function highlightEditDate(raw){
   const d=detectDate(raw);
+  _allEditBtnsReset();
   const map={[today()]:'edt-today',[tom()]:'edt-tom',[dag()]:'edt-dag'};
-  ['edt-today','edt-tom','edt-dag'].forEach(id=>{
-    const b=document.getElementById(id);
-    b.style.borderColor='#e5e5e5'; b.style.background='#fff'; b.style.color='#333';
-  });
   const selId=map[d];
-  if(selId){ const b=document.getElementById(selId); b.style.borderColor='#c0392b'; b.style.background='#c0392b'; b.style.color='#fff'; }
+  if(selId){const b=document.getElementById(selId);b.style.borderColor='#c0392b';b.style.background='#c0392b';b.style.color='#fff';}
+  document.querySelectorAll('#edt-weekdays button').forEach(b=>{
+    if(b.dataset.ds===d){b.style.borderColor='#c0392b';b.style.background='#c0392b';b.style.color='#fff';}
+  });
 }
 function closeEdit(){ document.getElementById('edit-modal').classList.remove('on'); ctxId=null; }
 async function saveEdit(){
