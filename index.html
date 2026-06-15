@@ -876,9 +876,10 @@ function render(){
     const fd=tabToDate(tab)||today();
     const dayOrders=all.filter(o=>o.date===fd);
     document.getElementById('ds-total').textContent=dayOrders.length;
-    document.getElementById('ds-am').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length;
-    document.getElementById('ds-pm').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
-    document.getElementById('ds-ev').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 2).length;
+    const _am=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length, _pm=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
+    document.getElementById('ds-am').textContent=_am;
+    document.getElementById('ds-pm').textContent=_pm;
+    document.getElementById('ds-ev').textContent=dayOrders.length-_am-_pm;
   }
 
   if(ADMINS.includes(me)){
