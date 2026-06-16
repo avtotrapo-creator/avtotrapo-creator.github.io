@@ -42,7 +42,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .outbtn { background:rgba(255,255,255,.2); border:none; color:#fff; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; }
 
 .tabs { display:flex; background:#fff; border-bottom:2px solid #f0f0f0; }
-.tab  { flex:1; min-width:0; padding:11px 4px; text-align:center; font-size:13px; font-weight:700; color:#555; border-bottom:3px solid transparent; cursor:pointer; }
+.tab  { flex:1; min-width:0; padding:11px 4px; text-align:center; font-size:11px; font-weight:700; color:#555; border-bottom:3px solid transparent; cursor:pointer; }
 .tab.on { color:#c0392b; border-bottom-color:#c0392b; }
 .tabic { font-size:19px; display:block; margin-bottom:1px; }
 .tbadge { display:inline-block; background:#c0392b; color:#fff; border-radius:10px; font-size:10px; padding:0 5px; line-height:16px; margin-left:2px; vertical-align:middle; }
@@ -51,8 +51,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 
 .stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px; }
 .stat  { background:#fff; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 1px 6px rgba(0,0,0,.05); }
-.snum  { font-size:30px; font-weight:900; color:#c0392b; }
-.slbl  { font-size:12px; color:#555; margin-top:2px; }
+.snum  { font-size:28px; font-weight:900; color:#c0392b; }
+.slbl  { font-size:10px; color:#bbb; margin-top:2px; }
 
 .addbtn { width:100%; padding:15px; background:#c0392b; color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:900; cursor:pointer; margin-bottom:14px; display:none; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(192,57,43,.3); }
 .addbtn:active { transform:scale(.98); }
@@ -63,7 +63,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 
 .fgroup { padding:14px 16px; border-bottom:1px solid #f0f0f0; }
 .fgroup:last-child { border-bottom:none; }
-.fglabel { font-size:10px; font-weight:800; color:#555; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
+.fglabel { font-size:10px; font-weight:800; color:#bbb; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
 
 .g1row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .finp { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; background:#fafafa; transition:border .15s; }
@@ -97,12 +97,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .card.morning   { border-left-color:#f39c12; }
 .card.afternoon { border-left-color:#27ae60; }
 .card.evening   { border-left-color:#8e44ad; }
-.card.done      { opacity:1; border-left-color:#27ae60 !important; }
-.card.duplicate { background:#fff0f0 !important; border-left-color:#e74c3c !important; }
-.card.duplicate .card-text { color:#b91c1c !important; }
+.card.done      { opacity:.42; }
 
 .ctop  { display:flex; align-items:center; justify-content:space-between; padding:10px 14px 6px; }
-.phonebtn { display:inline-flex; align-items:center; gap:6px; font-size:17px; font-weight:900; color:#15803d; text-decoration:none; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:24px; padding:6px 13px; }
+.phonebtn { display:inline-flex; align-items:center; gap:6px; font-size:15px; font-weight:900; color:#15803d; text-decoration:none; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:24px; padding:6px 13px; }
 .cname  { font-size:14px; font-weight:700; color:#333; text-align:right; }
 .cflags { display:flex; flex-direction:column; align-items:flex-end; gap:3px; margin-top:2px; }
 .flag   { font-size:10px; font-weight:700; padding:3px 8px; border-radius:12px; }
@@ -113,7 +111,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .fwait { background:#fef9c3; color:#a16207; }
 
 .cmid  { padding:4px 14px 8px; display:flex; flex-direction:column; gap:2px; }
-.crow  { font-size:15px; color:#555; }
+.crow  { font-size:13px; color:#555; }
 .crow.weight { color:#c0392b; font-weight:700; font-size:14px; }
 
 .cbot  { display:flex; align-items:center; justify-content:space-between; padding:8px 14px; border-top:1px solid #f5f5f5; }
@@ -128,19 +126,8 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .aassign { background:#dbeafe; color:#1d4ed8; }
 .adone   { background:#dcfce7; color:#15803d; }
 
-.empty { text-align:center; padding:55px 20px; color:#777; }
-.emptyic { font-size:52px; margin-bottom:8px; }
-
-.ctxmenu { display:none; position:fixed; z-index:300; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.18); overflow:hidden; min-width:180px; }
-.ctxmenu.on { display:block; }
-.ctxi { padding:14px 18px; font-size:14px; font-weight:700; color:#222; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid #f5f5f5; }
-.ctxi:last-child { border-bottom:none; }
-.ctxi:active { background:#f5f5f5; }
-.ctxi.red { color:#dc2626; }
-
-.mbg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; align-items:flex-end; justify-content:center; }
-.mbg.on { display:flex; }
-.modal { background:#fff; border-radius:22px 22px 0 0; padding:24px; width:100%; max-width:440px; color:#111 !important; }
+.card.duplicate { border-left-color:#e74c3c !important; }
+.modal { background:#fff !important; border-radius:22px 22px 0 0; padding:24px; width:100%; max-width:440px; color:#111 !important; }
 .modal h3 { font-size:16px; font-weight:900; margin-bottom:16px; color:#111 !important; }
 .mcg  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
 .mc   { padding:18px 8px; border:2px solid #eee; border-radius:14px; text-align:center; cursor:pointer; font-size:14px; font-weight:800; color:#111 !important; }
@@ -148,89 +135,38 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .mcic { font-size:32px; display:block; margin-bottom:6px; }
 .mcnone { width:100%; margin-top:10px; padding:12px; background:#f5f5f5; border:none; border-radius:12px; font-size:14px; color:#555 !important; cursor:pointer; font-weight:600; }
 .mcx    { width:100%; margin-top:8px; padding:12px; background:#fee2e2; border:none; border-radius:12px; font-size:14px; color:#dc2626 !important; cursor:pointer; font-weight:700; }
+.empty { text-align:center; padding:55px 20px; color:#ccc; }
+.emptyic { font-size:52px; margin-bottom:8px; }
+
+.ctxmenu { display:none; position:fixed; z-index:300; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.18); overflow:hidden; min-width:180px; }
+.ctxmenu.on { display:block; }
+.ctxi { padding:14px 18px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid #f5f5f5; }
+.ctxi:last-child { border-bottom:none; }
+.ctxi:active { background:#f5f5f5; }
+.ctxi.red { color:#dc2626; }
+
+.mbg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; align-items:flex-end; justify-content:center; }
+.mbg.on { display:flex; }
+.modal { background:#fff; border-radius:22px 22px 0 0; padding:24px; width:100%; max-width:440px; }
+.modal h3 { font-size:16px; font-weight:900; margin-bottom:16px; }
+.mcg  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.mc   { padding:18px 8px; border:2px solid #eee; border-radius:14px; text-align:center; cursor:pointer; font-size:13px; font-weight:700; }
+.mc:hover { border-color:#c0392b; }
+.mcic { font-size:28px; display:block; margin-bottom:3px; }
+.mcnone { width:100%; margin-top:10px; padding:12px; background:#f5f5f5; border:none; border-radius:12px; font-size:14px; color:#999; cursor:pointer; font-weight:600; }
+.mcx    { width:100%; margin-top:8px; padding:12px; background:#fee2e2; border:none; border-radius:12px; font-size:14px; color:#dc2626; cursor:pointer; font-weight:700; }
 
 .edit-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:250; align-items:flex-end; justify-content:center; }
 .edit-modal.on { display:flex; }
 .edit-box { background:#fff; border-radius:22px 22px 0 0; padding:20px; width:100%; max-width:480px; }
 .edit-box h3 { font-size:15px; font-weight:900; margin-bottom:14px; color:#c0392b; }
 .edit-row { margin-bottom:10px; }
-.edit-row label { font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
+.edit-row label { font-size:11px; font-weight:700; color:#bbb; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
 .edit-row input { width:100%; padding:11px 13px; border:1.5px solid #e8e8e8; border-radius:12px; font-size:15px; font-family:inherit; outline:none; }
 .edit-row input:focus { border-color:#c0392b; }
 .edit-acts { display:flex; gap:8px; margin-top:14px; }
 .edit-save { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:900; cursor:pointer; }
 .edit-cancel { padding:13px 18px; background:#f0f0f0; color:#888; border:none; border-radius:12px; font-size:14px; cursor:pointer; }
-
-/* DARK MODE */
-
-.card-text { color:#222; }
-
-body.dark .sloth { color:#aaa; }
-body.dark .empty { color:#666; }
-body.dark .cname { color:#eee; }
-body.dark .crow { color:#ddd; }
-body.dark .crow.weight { color:#ff6b6b; }
-body.dark .edit-row label { color:#aaa; }
-body.dark .edit-row textarea { background:#2a2a2a; border-color:#444; color:#f0f0f0; }
-
-body.dark * { color: inherit; }
-body.dark .card { color: #f0f0f0; }
-body.dark .stat { color: #f0f0f0; }
-
-.card-hint { color:#555; }
-.date-badge { color:#777; }
-body.dark .card-text { color:#f0f0f0; }
-body.dark .card-hint { color:#aaa; }
-body.dark .date-badge { color:#ccc; background:#333 !important; }
-body.dark .cbot { border-top-color:#333; }
-body.dark #ctx { background:#1e1e1e; border:1px solid #444; }
-body.dark .ctxi { color:#f0f0f0 !important; border-bottom-color:#333; }
-body.dark .ctxi.red { color:#f87171 !important; }
-body.dark .ctxi:active { background:#2a2a2a; }
-body.dark .cmitem { color:#eee; border-bottom-color:#333; }
-body.dark .ctag { background:#2a2a2a; color:#ccc; border-color:#444; }
-
-body.dark { background:#111; color:#f0f0f0; }
-body.dark #login { background:#1a1a1a; }
-body.dark .tabs { background:#1e1e1e; border-bottom-color:#333; }
-body.dark .tab  { color:#ccc; }
-body.dark .tab.on { color:#ff6b6b; border-bottom-color:#ff6b6b; }
-body.dark .wrap { }
-body.dark .stat { background:#1e1e1e; box-shadow:0 1px 6px rgba(0,0,0,.4); }
-body.dark .slbl { color:#aaa; }
-body.dark .card { background:#1e1e1e; box-shadow:0 1px 8px rgba(0,0,0,.4); border-left-color:#444; }
-body.dark .card.morning   { border-left-color:#f39c12; }
-body.dark .card.afternoon { border-left-color:#27ae60; }
-body.dark .card.evening   { border-left-color:#8e44ad; }
-body.dark .card.done      { opacity:1; border-left-color:#27ae60 !important; }
-body.dark .card.duplicate { background:#3a0000 !important; border-left-color:#e74c3c !important; }
-body.dark .card.duplicate .card-text { color:#fca5a5 !important; }
-body.dark .crow { color:#ddd; }
-body.dark .cname { color:#eee; }
-body.dark .addbtn { box-shadow:0 4px 12px rgba(0,0,0,.5); }
-body.dark .formbox { background:#1e1e1e; box-shadow:0 2px 14px rgba(0,0,0,.4); }
-body.dark .fgroup { border-bottom-color:#333; }
-body.dark .fglabel { color:#aaa; }
-body.dark .finp, body.dark .finp-big { background:#2a2a2a; border-color:#444; color:#f0f0f0; }
-body.dark .finp:focus, body.dark .finp-big:focus { border-color:#ff6b6b; background:#222; }
-body.dark .pill { background:#2a2a2a; border-color:#444; color:#ddd; }
-body.dark .pill.on { background:#c0392b; border-color:#c0392b; color:#fff; }
-body.dark .factions { border-top-color:#333; }
-body.dark .cancbtn { background:#2a2a2a; color:#aaa; }
-body.dark .db { background:#2a2a2a; border-color:#444; color:#ccc; }
-body.dark .db.on { background:#c0392b; border-color:#c0392b; color:#fff; }
-body.dark .sloth { color:#aaa; }
-body.dark .sloth::after { background:#333; }
-body.dark .phonebtn { background:#0d2b1a; border-color:#1a4d2e; color:#4ade80; }
-body.dark .mcnone { background:#2a2a2a; color:#aaa; }
-body.dark .edit-row label { color:#aaa; }
-body.dark .edit-cancel { background:#2a2a2a; color:#aaa; }
-body.dark #ctx-bg { }
-
-body.dark .cmitem { color:#ddd; border-bottom-color:#333; }
-body.dark .cmitem:active { background:#2a2a2a; }
-body.dark .acopy { background:#2a2a2a; color:#ddd; }
-
 </style>
 </head>
 <body>
@@ -249,7 +185,7 @@ body.dark .acopy { background:#2a2a2a; color:#ddd; }
   <div style="background:#fff;border-radius:22px;padding:28px 24px;width:90%;max-width:320px;text-align:center;">
     <div style="font-size:36px;margin-bottom:6px">🔐</div>
     <div style="font-size:17px;font-weight:900;margin-bottom:4px" id="pw-name"></div>
-    <div style="font-size:12px;color:#555;margin-bottom:18px">შეიყვანე პაროლი</div>
+    <div style="font-size:12px;color:#bbb;margin-bottom:18px">შეიყვანე პაროლი</div>
     <input id="pw-input" type="password" inputmode="numeric" maxlength="12"
       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
       style="width:100%;padding:14px;border:2px solid #eee;border-radius:14px;font-size:24px;letter-spacing:6px;text-align:center;outline:none;font-family:inherit"
@@ -268,13 +204,13 @@ body.dark .acopy { background:#2a2a2a; color:#ddd; }
     <div><div class="hbrand">🐷 პიწკინა</div><div class="huser" id="huser"></div></div>
     <div style="display:flex;gap:6px;align-items:center">
 <button class="outbtn" id="ref-btn" onclick="doRefresh()" title="განახლება" style="background:rgba(255,255,255,.25);padding:7px 11px">🔄</button>
-      <button class="outbtn" id="theme-btn" onclick="toggleTheme()" style="background:rgba(255,255,255,.25);padding:7px 11px;font-size:16px">🌙</button>
       <button class="outbtn" onclick="logout()">გასვლა</button>
     </div>
   </div>
 
   <div class="tabs">
     <div class="tab on" onclick="setTab('orders')" id="t-orders" style="display:none">შეკვეთები</div>
+    <div class="tab" onclick="setTab('mine')" id="t-mine" style="display:none">ჩემი</div>
     <div class="tab" onclick="setTab('today')" id="t-today">დღეს</div>
     <div class="tab" onclick="setTab('tom')" id="t-tom">ხვალ</div>
     <div class="tab" onclick="setTab('dag')" id="t-dag">ზეგ</div>
@@ -298,8 +234,8 @@ body.dark .acopy { background:#2a2a2a; color:#ddd; }
     <div id="courier-stats" style="display:none;background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,.05)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <button onclick="toggleCsCollapse()" style="background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0">
-          <span style="font-size:11px;font-weight:800;color:#555;text-transform:uppercase;letter-spacing:.6px">კურიერები</span>
-          <span id="cs-arrow" style="font-size:12px;color:#555">▼</span>
+          <span style="font-size:11px;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.6px">კურიერები</span>
+          <span id="cs-arrow" style="font-size:12px;color:#bbb">▼</span>
         </button>
         <div style="display:flex;gap:5px">
           <button id="cs-btn-today" onclick="setCsPeriod('today')" style="padding:4px 9px;border-radius:10px;border:none;font-size:11px;font-weight:800;cursor:pointer;background:#f0f0f0;color:#888">დღეს</button>
@@ -382,7 +318,7 @@ body.dark .acopy { background:#2a2a2a; color:#ddd; }
   <div style="background:#fff;border-radius:22px;padding:24px 20px;width:100%;max-width:420px;text-align:center;" onclick="event.stopPropagation()">
     <div style="font-size:44px;margin-bottom:6px">🚙</div>
     <div style="font-size:17px;font-weight:900;margin-bottom:4px">მიტანის დადასტურება</div>
-    <div style="font-size:12px;color:#555;margin-bottom:16px">დარწმუნებული ხარ?</div>
+    <div style="font-size:12px;color:#bbb;margin-bottom:16px">დარწმუნებული ხარ?</div>
     <div id="dlv-info" style="font-size:13px;color:#555;margin-bottom:20px;text-align:left;background:#f9f9f9;padding:12px 14px;border-radius:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto"></div>
     <button onclick="confirmDelivery()" style="width:100%;padding:16px;background:#27ae60;color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;margin-bottom:10px;box-shadow:0 4px 14px rgba(39,174,96,.3)">✅ მიტანილია</button>
     <button onclick="closeDlvModal()" style="width:100%;padding:13px;background:#f0f0f0;color:#888;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer">გაუქმება</button>
@@ -612,12 +548,18 @@ function login(n,r){
     document.getElementById('t-orders').style.display='block';
     setTab('orders');
   } else {
-    setTab('today');
+    document.getElementById('t-mine').style.display='block';
+    setTab('mine');
   }
   render();
 }
-function doRefresh(){
-  location.reload();
+async function doRefresh(){
+  const btn=document.getElementById('ref-btn');
+  btn.style.opacity='.4'; btn.style.pointerEvents='none';
+  const a=await cloudLoad();
+  if(a && a.length>0){ store(a); }
+  render();
+  btn.style.opacity='1'; btn.style.pointerEvents='auto';
 }
 function logout(){
   localStorage.removeItem('pw4_session');
@@ -626,6 +568,11 @@ function logout(){
   closeForm(); me=''; role='';
 }
 
+function setRating(id,val){
+  const a=load(), o=a.find(x=>x.id===id); if(!o) return;
+  o.rating = (o.rating===val) ? null : val;
+  store(a); cloudUpdate(o); render();
+}
 function setTab(t){
   tab=t; calDate='';
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
@@ -693,9 +640,6 @@ function handleTap(e, id){
 let _dlvId=null;
 function showCourierConfirm(id){
   const o=load().find(x=>x.id===id); if(!o||o.done) return;
-  // courier can only confirm their own assigned orders
-  if(o.courier && o.courier!==me){ alert('ეს შეკვეთა '+o.courier+'ს აქვს მინიჭებული'); return; }
-  if(!o.courier){ alert('შეკვეთა კურიერს არ აქვს მინიჭებული'); return; }
   _dlvId=id;
   const el=document.getElementById('dlv-info');
   let txt='';
@@ -866,7 +810,7 @@ const CT={'ანდრო':'ct-a','ლევანი':'ct-l','ბექა':'c
 const COURIER_CAR={'ანდრო':'🚙','ლევანი':'🚗','ბექა':'🚐'};
 
 function tabToDate(t){
-  if(t==='today') return today();
+  if(t==='mine'||t==='today') return today();
   if(t==='tom')   return tom();
   if(t==='dag')   return dag();
   if(t==='cal')   return calDate||null;
@@ -921,13 +865,13 @@ function renderCourierStats(){
         </div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:16px;font-weight:900;color:#27ae60">${done}<span style="font-size:11px;color:#555;font-weight:600"> ✓</span></div>
-        <div style="font-size:10px;color:#555">${total} სულ</div>
+        <div style="font-size:16px;font-weight:900;color:#27ae60">${done}<span style="font-size:11px;color:#bbb;font-weight:600"> ✓</span></div>
+        <div style="font-size:10px;color:#bbb">${total} სულ</div>
       </div>
     </div>`;
   });
   const lbl=csPeriod==='today'?'დღეს':csPeriod==='month'?GEO_MONTHS[now.getMonth()]+' '+now.getFullYear():'ყველა დრო';
-  html+=`<div style="font-size:10px;color:#777;margin-top:8px;text-align:center">${lbl}</div>`;
+  html+=`<div style="font-size:10px;color:#ccc;margin-top:8px;text-align:center">${lbl}</div>`;
   el.innerHTML=html;
 }
 
@@ -947,12 +891,13 @@ function render(){
 
   if(!isOrdersTab){
     const fd=tabToDate(tab)||today();
-    const dayOrders=all.filter(o=>o.date===fd);
+    const dayOrders=tab==='mine'
+      ? all.filter(o=>o.date===today() && o.courier===me)
+      : all.filter(o=>o.date===fd);
     document.getElementById('ds-total').textContent=dayOrders.length;
-    const _am=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length, _pm=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
-    document.getElementById('ds-am').textContent=_am;
-    document.getElementById('ds-pm').textContent=_pm;
-    document.getElementById('ds-ev').textContent=dayOrders.length-_am-_pm;
+    document.getElementById('ds-am').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 0).length;
+    document.getElementById('ds-pm').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 1).length;
+    document.getElementById('ds-ev').textContent=dayOrders.filter(o=>slotBucket(o.raw||'')=== 2).length;
   }
 
   if(ADMINS.includes(me)){
@@ -967,7 +912,7 @@ function render(){
       const old=el.querySelector('.tbadge'); if(old) old.remove();
       const fd=tabToDate(t);
       const base=(t==='orders'||!fd)?all:all.filter(o=>o.date===fd);
-      const cnt=base.length;
+      const cnt=base.filter(o=>!o.done).length;
       if(cnt){
         const sp=document.createElement('span'); sp.className='tbadge'; sp.textContent=cnt;
         sp.style.pointerEvents='none'; sp.style.position='relative'; sp.style.zIndex='1';
@@ -982,16 +927,27 @@ function render(){
     });
   }
 
+  // Duplicate detection: same phone+date+slot
+  const dupIds=new Set();
+  const seen={};
+  all.forEach(o=>{
+    const key=(o.phone||'').replace(/\D/g,'')+'_'+o.date+'_'+slotBucket(o.raw||'');
+    if(seen[key]) dupIds.add(o.id), dupIds.add(seen[key]);
+    else seen[key]=o.id;
+  });
+
   let list=all;
   if(tab==='orders'){
     list=[...all].sort((a,b)=>b.id-a.id);
+  } else if(tab==='mine'){
+    list=list.filter(o=>o.date===today() && o.courier===me);
   } else {
     const fd=tabToDate(tab);
     if(fd) list=list.filter(o=>o.date===fd);
     list.sort((a,b)=>{
       if(a.date!==b.date) return a.date.localeCompare(b.date);
-      const ba=slotBucket(a.raw||''), bb=slotBucket(b.raw||'');
-      if(ba!==bb) return ba-bb;
+      const sb=slotBucket(a.raw||'')-slotBucket(b.raw||'');
+      if(sb!==0) return sb;
       return a.id-b.id;
     });
   }
@@ -1002,20 +958,6 @@ function render(){
   const SLOT_HDR=['🏃 დ ი ლ ა 🏃','🌞 შ უ ა დ ღ ე 🌞','🌛 ს ა ღ ა მ ო 🌛'];
   const SLOT_COL=['#f39c12','#27ae60','#8e44ad'];
   let html='';
-
-  // Build duplicate detection: same phone + same date + same time slot = duplicate
-  const dupIds=new Set();
-  {
-    const keyMap={};
-    all.forEach(o=>{
-      const ph=(o.phone||'').replace(/\s/g,'');
-      if(!ph) return;
-      const key=ph+'|'+o.date+'|'+slotBucket(o.raw||'');
-      if(!keyMap[key]) keyMap[key]=[];
-      keyMap[key].push(o.id);
-    });
-    Object.values(keyMap).forEach(ids=>{ if(ids.length>1) ids.forEach(id=>dupIds.add(id)); });
-  }
 
   if(tab==='orders'){
     const byReceived={};
@@ -1071,12 +1013,6 @@ function render(){
   });
 }
 
-function setRating(id,val){
-  const a=load(), o=a.find(x=>x.id===id); if(!o) return;
-  o.rating = (o.rating===val) ? null : val;
-  store(a); cloudUpdate(o); render();
-}
-
 function cardHtml(o, ph, ctag, bcol, showDate, isDuplicate){
   const dateBadge = showDate ? `<span class="date-badge" style="font-size:10px;background:#f0f0f0;padding:2px 7px;border-radius:10px;font-weight:700">${dayName(o.date)}</span>` : '';
   const dupLabel = isDuplicate ? `<span style="font-size:10px;font-weight:900;color:#e74c3c;padding:2px 7px;border-radius:10px;margin-bottom:4px;display:inline-block">⚠️ განმეორება</span>` : '';
@@ -1127,23 +1063,6 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
     if(s && s.name && s.role) login(s.name, s.role);
   }catch(e){}
 })();
-
-function toggleTheme(){
-  const dark=document.body.classList.toggle('dark');
-  localStorage.setItem('pw_theme', dark?'dark':'light');
-  document.getElementById('theme-btn').textContent=dark?'☀️':'🌙';
-}
-(function(){
-  if(localStorage.getItem('pw_theme')==='dark'){
-    document.body.classList.add('dark');
-    // btn will be set after DOM loads
-    document.addEventListener('DOMContentLoaded',function(){
-      const b=document.getElementById('theme-btn');
-      if(b) b.textContent='☀️';
-    });
-  }
-})();
-
 </script>
 </body>
 </html>
