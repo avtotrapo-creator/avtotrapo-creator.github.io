@@ -138,6 +138,37 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .empty { text-align:center; padding:55px 20px; color:#ccc; }
 .emptyic { font-size:52px; margin-bottom:8px; }
 
+/* DARK MODE */
+body.dark { background:#111; color:#f0f0f0; }
+body.dark .hdr { background:#8b1c12; }
+body.dark .tabs { background:#1e1e1e; border-color:#333; }
+body.dark .tab { color:#888; }
+body.dark .tab.on { color:#e74c3c; border-bottom-color:#e74c3c; }
+body.dark .wrap { background:transparent; }
+body.dark .stat { background:#1e1e1e; }
+body.dark .card { background:#1e1e1e; box-shadow:0 1px 8px rgba(0,0,0,.3); }
+body.dark .cbot { border-color:#2a2a2a; }
+body.dark .ctag { background:#2a2a2a; color:#aaa; }
+body.dark .formbox { background:#1e1e1e; box-shadow:0 2px 14px rgba(0,0,0,.3); }
+body.dark .fgroup { border-color:#2a2a2a; }
+body.dark .fglabel { color:#777; }
+body.dark .finp, body.dark .finp-big { background:#2a2a2a; border-color:#3a3a3a; color:#f0f0f0; }
+body.dark .addbtn { box-shadow:0 4px 12px rgba(0,0,0,.4); }
+body.dark .pill { background:#2a2a2a; border-color:#3a3a3a; color:#bbb; }
+body.dark .pill.on { background:#c0392b; border-color:#c0392b; color:#fff; }
+body.dark .factions { border-color:#2a2a2a; }
+body.dark .cancbtn { background:#2a2a2a; color:#888; }
+body.dark .phonebtn { background:#0d2b1a; border-color:#1a4a2a; color:#4ade80; }
+body.dark .db { background:#1e1e1e; border-color:#333; color:#aaa; }
+body.dark .db.on { background:#c0392b; border-color:#c0392b; color:#fff; }
+body.dark .modal { background:#1e1e1e !important; color:#f0f0f0 !important; }
+body.dark .modal h3 { color:#f0f0f0 !important; }
+body.dark .mc { background:#2a2a2a; border-color:#3a3a3a; color:#f0f0f0 !important; }
+body.dark .mcnone { background:#2a2a2a; color:#bbb !important; }
+body.dark .mcx { background:#3d0f0f; color:#f87171 !important; }
+body.dark .courier-stats-box { background:#1e1e1e; }
+body.dark .cs-row { border-color:#2a2a2a; }
+
 .ctxmenu { display:none; position:fixed; z-index:300; background:#fff; border-radius:16px; box-shadow:0 8px 30px rgba(0,0,0,.18); overflow:hidden; min-width:180px; }
 .ctxmenu.on { display:block; }
 .ctxi { padding:14px 18px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:10px; border-bottom:1px solid #f5f5f5; }
@@ -204,6 +235,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
     <div><div class="hbrand">🐷 პიწკინა</div><div class="huser" id="huser"></div></div>
     <div style="display:flex;gap:6px;align-items:center">
 <button class="outbtn" id="ref-btn" onclick="doRefresh()" title="განახლება" style="background:rgba(255,255,255,.25);padding:7px 11px">🔄</button>
+    <button class="outbtn" id="dark-btn" onclick="toggleDark()" title="Dark/Light" style="background:rgba(255,255,255,.25);padding:7px 11px">☀️</button>
       <button class="outbtn" onclick="logout()">გასვლა</button>
     </div>
   </div>
@@ -568,6 +600,11 @@ function logout(){
   closeForm(); me=''; role='';
 }
 
+function toggleDark(){
+  const d=document.body.classList.toggle('dark');
+  localStorage.setItem('pw4_dark', d?'1':'0');
+  document.getElementById('dark-btn').textContent=d?'🌙':'☀️';
+}
 function setRating(id,val){
   const a=load(), o=a.find(x=>x.id===id); if(!o) return;
   o.rating = (o.rating===val) ? null : val;
@@ -1057,6 +1094,12 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
     <button class="ubtn" onclick="courierLogin('ანდრო')"><span class="av">🚙</span>ანდრო</button>
     <button class="ubtn" onclick="courierLogin('ლევანი')"><span class="av">🚗</span>ლევანი</button>
     <button class="ubtn" onclick="courierLogin('ბექა')" style="grid-column:span 2"><span class="av">🚐</span>ბექა</button>`;
+  // Restore dark mode
+  if(localStorage.getItem('pw4_dark')==='1'){
+    document.body.classList.add('dark');
+    const db=document.getElementById('dark-btn');
+    if(db) db.textContent='🌙';
+  }
   // Auto-login from saved session
   try{
     const s=JSON.parse(localStorage.getItem('pw4_session')||'null');
