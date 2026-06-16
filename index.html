@@ -431,9 +431,9 @@ function extractPhone(raw){
 }
 function slotBucket(raw){
   // ── ranges (morning 11-1, afternoon 1/2-3, evening 4/5-6) ──────────────────
-  if(/\b11\s*[–\-]\s*(1|12|13)\b/.test(raw)) return 0;           // 11-1, 11-12, 11-13
-  if(/\b(1|2|13|14)\s*[–\-]\s*(2|3|14|15)\b/.test(raw)) return 1; // 1-3, 2-3, 13-15
-  if(/\b(4|5|16|17)\s*[–\-]\s*(5|6|17|18)\b/.test(raw)) return 2; // 4-6, 4-5, 5-6, 16-18
+  if(/(?<!\.)\b11\s*[–\-]\s*(1|12|13)(?!\.\d)\b/.test(raw)) return 0;           // 11-1, 11-12, 11-13
+  if(/(?<!\.)\b(1|2|13|14)\s*[–\-]\s*(2|3|14|15)(?!\.\d)\b/.test(raw)) return 1; // 1-3, 2-3, 13-15
+  if(/(?<!\.)\b(4|5|16|17)\s*[–\-]\s*(5|6|17|18)(?!\.\d)\b/.test(raw)) return 2; // 4-6, 4-5, 5-6, 16-18
   // ── single time with სთ or ს (no trailing \b — Georgian chars aren't word chars) ──
   const m = raw.match(/\b(\d{1,2})\s*(?:სთ|ს)/);
   if(m){
