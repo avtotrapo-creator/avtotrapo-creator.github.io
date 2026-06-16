@@ -84,6 +84,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; backg
 .factions { display:flex; gap:8px; padding:14px 16px; border-top:1px solid #f0f0f0; }
 .savebtn  { flex:1; padding:13px; background:#c0392b; color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:900; cursor:pointer; }
 .cancbtn  { padding:13px 18px; background:#f0f0f0; color:#888; border:none; border-radius:12px; font-size:14px; cursor:pointer; }
+.slotpick { display:flex; gap:8px; padding:10px 16px; border-bottom:1px solid #f0f0f0; }
+.slotbtn  { flex:1; padding:10px 4px; border:2px solid #e0e0e0; border-radius:10px; background:#fafafa; color:#666; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s; }
+.slotbtn.on { border-color:#c0392b; background:#c0392b; color:#fff; }
+body.dark .slotpick { border-color:#2a2a2a; }
+body.dark .slotbtn { background:#2a2a2a; border-color:#3a3a3a; color:#888; }
+body.dark .slotbtn.on { border-color:#e74c3c; background:#e74c3c; color:#fff; }
 
 .daybar { display:flex; gap:8px; margin-bottom:12px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
 .daybar::-webkit-scrollbar { display:none; }
@@ -294,7 +300,12 @@ body.dark .cs-row { border-color:#2a2a2a; }
 
     <div class="formbox" id="form">
       <div class="fgroup">
-        <textarea class="finp-big" id="f-raw" rows="7" style="resize:none;line-height:1.6;font-size:16px"></textarea>
+        <textarea class="finp-big" id="f-raw" rows="7" style="resize:none;line-height:1.6;font-size:16px" oninput="autoSlotDetect()"></textarea>
+      </div>
+      <div class="slotpick">
+        <button class="slotbtn" id="sb0" onclick="pickSlot(0)">🏃 დილა</button>
+        <button class="slotbtn" id="sb1" onclick="pickSlot(1)">☀️ შუადღე</button>
+        <button class="slotbtn" id="sb2" onclick="pickSlot(2)">🌙 საღამო</button>
       </div>
       <div class="factions">
         <button class="cancbtn" onclick="closeForm()">გაუქმება</button>
@@ -430,6 +441,8 @@ function extractPhone(raw){
   const m=raw.match(/[\d]{9,}/); return m?m[0]:'';
 }
 function slotBucket(raw){
+  // manual override stored as [D0],[D1],[D2] prefix
+  const dm=raw.match(/^\[D([012])\]/); if(dm) return parseInt(dm[1]);
   function pm(h){ return (h>=1&&h<=9)?h+12:h; }
   function slot(h){ h=pm(h); if(h>=11&&h<13)return 0; if(h>=13&&h<16)return 1; if(h>=16)return 2; return 3; }
   // range A-B (skip decimals like 5-5.5 or 5.5-6)
@@ -649,13 +662,29 @@ function pickCalDate(v){
   render();
 }
 
+let _pickedSlot=-1, _slotManual=false;
 function openForm(){
+  _pickedSlot=-1; _slotManual=false;
+  setSlotBtns(-1);
   document.getElementById('form').classList.add('on');
   document.getElementById('f-raw').focus();
 }
 function closeForm(){
+  _pickedSlot=-1; _slotManual=false;
+  setSlotBtns(-1);
   document.getElementById('form').classList.remove('on');
   document.getElementById('f-raw').value='';
+}
+function setSlotBtns(s){
+  [0,1,2].forEach(i=>{ const b=document.getElementById('sb'+i); if(b) b.classList.toggle('on',i===s); });
+}
+function pickSlot(s){
+  _pickedSlot=s; _slotManual=true; setSlotBtns(s);
+}
+function autoSlotDetect(){
+  if(_slotManual) return;
+  const s=slotBucket(document.getElementById('f-raw').value);
+  _pickedSlot=s<3?s:-1; setSlotBtns(_pickedSlot);
 }
 
 function saveOrder(){
@@ -666,7 +695,9 @@ function saveOrder(){
     const lines=raw.split('\n'); lines[0]=lines[0].trimEnd()+' 📌'; raw=lines.join('\n');
   }
   raw=autoFormat(raw);
-  const newOrder={ id: Date.now(), raw, phone: extractPhone(raw), date: detectDate(raw), courier:'', done:false, by:me };
+  const slotPfx=_pickedSlot>=0?'[D'+_pickedSlot+']':'';
+  const rawStored=slotPfx+raw;
+  const newOrder={ id: Date.now(), raw: rawStored, phone: extractPhone(raw), date: detectDate(raw), courier:'', done:false, by:me };
   const a=load();
   a.push(newOrder);
   store(a); closeForm(); render();
@@ -692,7 +723,7 @@ function showCourierConfirm(id){
   const el=document.getElementById('dlv-info');
   let txt='';
   if(o.phone) txt+='📞 '+o.phone+'\n';
-  txt+=o.raw||'';
+  txt+=(o.raw||'').replace(/^\[D[012]\]/,'');
   el.textContent=txt;
   document.getElementById('dlv-modal').style.display='flex';
 }
@@ -733,7 +764,7 @@ function closeCtx(){
 }
 function ctxCopy(){
   const o=load().find(x=>x.id===ctxId); if(!o){ closeCtx(); return; }
-  const txt=o.raw||'';
+  const txt=(o.raw||'').replace(/^\[D[012]\]/,'');
   navigator.clipboard?.writeText(txt).catch(()=>{
     const ta=document.createElement('textarea'); ta.value=txt;
     document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
@@ -1080,7 +1111,7 @@ function cardHtml(o, ph, ctag, bcol, showDate, isDuplicate){
       <div style="flex:1">
         ${dupLabel}
         ${ph?`<a class="phonebtn" href="tel:${esc(ph)}" style="margin-bottom:6px;display:inline-flex">📞 ${esc(o.phone)}</a>`:''}
-        <div class="card-text" style="font-size:17px;white-space:pre-line;line-height:1.65;margin-top:${ph?'6':'0'}px">${esc(o.raw||'')}</div>
+        <div class="card-text" style="font-size:17px;white-space:pre-line;line-height:1.65;margin-top:${ph?'6':'0'}px">${esc((o.raw||'').replace(/^\[D[012]\]/,''))}</div>
       </div>
       <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         ${dateBadge}
