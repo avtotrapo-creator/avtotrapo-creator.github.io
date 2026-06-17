@@ -374,9 +374,8 @@ body.dark .cs-row { border-color:#2a2a2a; }
 
 <script>
 window.onerror=function(m,s,l,c,e){
-  var g=document.getElementById("ugrid");
-  if(g) g.innerHTML="<div style=\"color:red;padding:10px;font-size:13px\">ERROR: "+m+" (line "+l+")</div>";
-  return false;
+  console.warn('App error:',m,'line',l,e);
+  return true;
 };
 const ADMINS = ['ავთო','ხათო'];
 let me='', role='', tab='all', assignId=null, calDate='';
@@ -539,12 +538,14 @@ function fixNumericDates(arr){
   store(arr);
 }
 function startRealtime(){
-  if(!sb) return;
-  sb.channel('orders-all')
-    .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{
-      cloudLoad().then(a=>{ if(a){ store(a); render(); } });
-    })
-    .subscribe();
+  try{
+    if(!sb) return;
+    sb.channel('orders-all')
+      .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{
+        cloudLoad().then(a=>{ if(a){ store(a); render(); } }).catch(function(e){ console.warn('cloudLoad error',e); });
+      })
+      .subscribe();
+  }catch(e){ console.warn('Realtime error',e); }
 }
 function exportBackup(){
   const a=load();
